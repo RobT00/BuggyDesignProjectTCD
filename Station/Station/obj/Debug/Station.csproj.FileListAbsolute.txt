@@ -1,1 +1,6 @@
 U:\Z8_Machine\Station\Station\bin\Debug\Station.exe.config
+U:\Z8_Machine\Station\Station\bin\Debug\Station.exe
+U:\Z8_Machine\Station\Station\bin\Debug\Station.pdb
+U:\Z8_Machine\Station\Station\obj\Debug\Station.csprojResolveAssemblyReference.cache
+U:\Z8_Machine\Station\Station\obj\Debug\Station.exe
+U:\Z8_Machine\Station\Station\obj\Debug\Station.pdb
