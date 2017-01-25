@@ -1,0 +1,6 @@
+C:\Google Drive\SF\2E10\C#\Buggy\Buggy\bin\Debug\Buggy.exe.config
+C:\Google Drive\SF\2E10\C#\Buggy\Buggy\bin\Debug\Buggy.exe
+C:\Google Drive\SF\2E10\C#\Buggy\Buggy\bin\Debug\Buggy.pdb
+C:\Google Drive\SF\2E10\C#\Buggy\Buggy\obj\Debug\Buggy.csprojResolveAssemblyReference.cache
+C:\Google Drive\SF\2E10\C#\Buggy\Buggy\obj\Debug\Buggy.exe
+C:\Google Drive\SF\2E10\C#\Buggy\Buggy\obj\Debug\Buggy.pdb
