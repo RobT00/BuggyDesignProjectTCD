@@ -21,15 +21,17 @@ namespace Test
         public static int Times(string s)
         {
             int times = 0;
-            if (char.IsDigit(message[0])) {
-                while ((message.Length > 0) && (char.IsDigit(message[0]))){
+            if (char.IsDigit(message[0]))
+            {
+                while ((message.Length > 0) && (char.IsDigit(message[0])))
+                {
                     //Console.WriteLine("11 " + times);
                     //Console.WriteLine(char.IsDigit(message[0]));
                     times *= 10;
-                    times += int.Parse(message.Substring(0,1));
+                    times += int.Parse(message.Substring(0, 1));
                     //Console.WriteLine(times);
                     //Console.WriteLine(message[0]);
-                    message = message.Substring(1, message.Length-1);
+                    message = message.Substring(1, message.Length - 1);
                     //Console.WriteLine(message[0]);
                     //Console.WriteLine(message);
                 }
@@ -52,7 +54,7 @@ namespace Test
                 {
                     //int number = Int32.Parse(message.Substring(6, 1));
                     message = message.Substring(6);
-                   // Console.WriteLine(message);
+                    // Console.WriteLine(message);
                     number = Times(message);
                     //Console.WriteLine(number);
                     for (int i = 0; i < number; i++)
