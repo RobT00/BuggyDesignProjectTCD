@@ -9584,8 +9584,6 @@ Based on the following sources:
 <part name="GND3" library="supply1" deviceset="GND" device=""/>
 <part name="IC1" library="40xx" deviceset="4001" device="N"/>
 <part name="IC2" library="40xx" deviceset="4075" device="N"/>
-<part name="GND4" library="supply1" deviceset="GND" device=""/>
-<part name="GND5" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -9606,10 +9604,6 @@ Based on the following sources:
 <instance part="IC2" gate="A" x="45.72" y="63.5"/>
 <instance part="IC2" gate="B" x="45.72" y="81.28"/>
 <instance part="IC1" gate="B" x="15.24" y="81.28"/>
-<instance part="IC1" gate="P" x="93.98" y="86.36"/>
-<instance part="IC2" gate="P" x="106.68" y="86.36"/>
-<instance part="GND4" gate="1" x="93.98" y="76.2"/>
-<instance part="GND5" gate="1" x="106.68" y="76.2"/>
 </instances>
 <busses>
 </busses>
@@ -9678,14 +9672,6 @@ Based on the following sources:
 <label x="-35.56" y="22.86" size="1.778" layer="95"/>
 <wire x1="-7.62" y1="22.86" x2="-40.64" y2="22.86" width="0.1524" layer="91"/>
 </segment>
-<segment>
-<wire x1="93.98" y1="99.06" x2="93.98" y2="93.98" width="0.1524" layer="91"/>
-<label x="91.44" y="96.52" size="1.778" layer="95"/>
-</segment>
-<segment>
-<wire x1="106.68" y1="93.98" x2="106.68" y2="99.06" width="0.1524" layer="91"/>
-<label x="109.22" y="96.52" size="1.778" layer="95"/>
-</segment>
 </net>
 <net name="GND" class="0">
 <segment>
@@ -9715,14 +9701,6 @@ Based on the following sources:
 <wire x1="-66.04" y1="2.54" x2="-66.04" y2="7.62" width="0.1524" layer="91"/>
 <pinref part="BUGGY_CON" gate="G$1" pin="13'"/>
 <wire x1="-66.04" y1="7.62" x2="-55.88" y2="7.62" width="0.1524" layer="91"/>
-</segment>
-<segment>
-<pinref part="IC1" gate="P" pin="VSS"/>
-<pinref part="GND4" gate="1" pin="GND"/>
-</segment>
-<segment>
-<pinref part="IC2" gate="P" pin="VSS"/>
-<pinref part="GND5" gate="1" pin="GND"/>
 </segment>
 </net>
 <net name="N$2" class="0">
