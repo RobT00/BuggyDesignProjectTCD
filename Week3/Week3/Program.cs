@@ -19,15 +19,14 @@ namespace Week3
             port.PortName = "COM6";
             port.BaudRate = 9600;
             port.Open();
-            port.DataReceived += recievedData;
 
             port.Write("+++");
             Thread.Sleep(1100);
-            port.WriteLine("ATID 3333, CH C, CN");
-            //Thread.Sleep(1100);
-            //port.DiscardInBuffer();
+            port.WriteLine("ATID 6968, CH C, CN");
+            Thread.Sleep(10000);
+            port.DiscardInBuffer();
+            port.DataReceived += recievedData;
 
-            //port.Write("---");
             while (true) {
                 Console.Write("> ");
                 message = Console.ReadLine();
@@ -41,9 +40,10 @@ namespace Week3
                 }
                 else
                 {
-                    port.WriteLine(message);
+                    port.Write(message + "\n");
                     Messages.Add(message);
                     count++;
+                    Thread.Sleep(200);
                 }
             }
         }
