@@ -1,7 +1,10 @@
 # Command specifications
 
-Each command is a single word, in capital letters and numbers, terminated by a
-newline (`\n`). They have no arguments.
+Each message consists if a sender ID, a reciever ID, and a command. They are
+terminated by a newline (`n`).
+
+IDs can be 0, 1, or 2, with 0 representing the station, and the other two the
+buggies
 
 ### Commands sent by the buggy:
 
@@ -22,6 +25,7 @@ Command | Explanation
 --- | ---
 PING | For communications testing, expecting PONG
 PONG | For communications testing, expecting PING
+LED | Requests buggy to flash its LED for identification purposes
 CLOCK | Informs buggy that it will go clockwise around the track (will be relevant for levels silver and gold)
 ACLOCK | Informs buggy that it will go anti-clockwise around the track (will be relevant for levels silver and gold)
 GO | Commands buggy to go, following line
