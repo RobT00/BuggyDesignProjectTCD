@@ -10,3 +10,6 @@ U:\2E10\Z8_Machine\Week3\Week3\obj\Debug\Week3.pdb
 U:\2E10\Z8_Machine\Week3\Week3\bin\Debug\Week3.exe
 U:\2E10\Z8_Machine\Week3\Week3\bin\Debug\Week3.pdb
 U:\2E10\Z8_Machine\Week3\Week3\obj\Debug\Week3.csprojResolveAssemblyReference.cache
+H:\Google Drive\SF\2E10\Z8_Machine\Week3\Week3\bin\Debug\Week3.exe.config
+H:\Google Drive\SF\2E10\Z8_Machine\Week3\Week3\obj\Debug\Week3.exe
+H:\Google Drive\SF\2E10\Z8_Machine\Week3\Week3\obj\Debug\Week3.pdb
