@@ -2,7 +2,7 @@
 
 #include "Functions.h"
 
-#include <cstdint>
+#include <stdint.h>
 
 class HashMap {
     private:

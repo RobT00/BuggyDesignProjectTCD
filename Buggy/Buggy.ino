@@ -1,4 +1,5 @@
 #include "HashMap.h"
+#include "MotorControls.h"
 
 void setup() {
   // put your setup code here, to run once:
