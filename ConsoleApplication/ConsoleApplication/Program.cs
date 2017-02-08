@@ -6,15 +6,14 @@ using System.Threading.Tasks;
 using System.IO.Ports;
 using System.Threading;
 
-namespace Week3
+namespace ConsoleApplication
 {
     class Program
     {
         static String message = "";
-        static List<String> Messages = new List<String>();
-        static int count = 0;
         static void Main(string[] args)
         {
+            var HashMap = new Dictionary<object, int, int, string>();
             SerialPort port = new SerialPort();
             port.PortName = "COM6";
             port.BaudRate = 9600;
@@ -27,34 +26,20 @@ namespace Week3
             port.DiscardInBuffer();
             port.DataReceived += recievedData;
 
-            while (true) {
+            while (true)
+            {
                 Console.Write("> ");
                 message = Console.ReadLine();
-                if (message == "print")
-                {
-                    for (int i = 0; i < count; i++)
-                    {
-                        string output = Messages[i];
-                        Console.WriteLine(output);
-                    }
-                }
-                else
-                {
-                    port.Write(message + "\n");
-                    Messages.Add(message);
-                    count++;
-                    Thread.Sleep(200);
-                }
+                port.Write(message + "\n");
+                Thread.Sleep(200);
             }
         }
 
         private static void recievedData(object sender, SerialDataReceivedEventArgs e)
         {
-            SerialPort test = (SerialPort) sender;
-            String message2 = test.ReadLine();
-            Console.WriteLine("> " + message2);
-            Messages.Add(message2);
-            count++;
+            SerialPort test = (SerialPort)sender;
+            String message = test.ReadLine();
+            Console.WriteLine("> " + message);
         }
     }
 }
