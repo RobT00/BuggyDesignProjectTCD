@@ -10,36 +10,13 @@ namespace ConsoleApplication
 {
     class Program
     {
-        static String message = "";
         static void Main(string[] args)
         {
-            var HashMap = new Dictionary<object, int, int, string>();
-            SerialPort port = new SerialPort();
-            port.PortName = "COM6";
-            port.BaudRate = 9600;
-            port.Open();
-
-            port.Write("+++");
-            Thread.Sleep(1100);
-            port.WriteLine("ATID 6968, CH C, CN");
-            Thread.Sleep(10000);
-            port.DiscardInBuffer();
-            port.DataReceived += recievedData;
-
+            Communications communicator = new Communications();
             while (true)
             {
-                Console.Write("> ");
-                message = Console.ReadLine();
-                port.Write(message + "\n");
-                Thread.Sleep(200);
+                
             }
-        }
-
-        private static void recievedData(object sender, SerialDataReceivedEventArgs e)
-        {
-            SerialPort test = (SerialPort)sender;
-            String message = test.ReadLine();
-            Console.WriteLine("> " + message);
         }
     }
 }
