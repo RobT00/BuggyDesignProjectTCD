@@ -10,8 +10,8 @@ namespace ConsoleApplication
 {
     class Communications
     {
-        static String message = "";
         private Dictionary<string, Action<int>> buggyhash = new Dictionary<string, Action<int>>();
+        private Action<int, string> defaultHandler = null;
         private SerialPort port = new SerialPort();
         public Communications()
         {
@@ -30,7 +30,6 @@ namespace ConsoleApplication
         public void send(int buggy_id, string command)
         {
             int sender_id = 0;
-            Console.Write("> ");
             port.Write(sender_id + " " + buggy_id + " " + command + "\n");
             Thread.Sleep(200);
         }
@@ -38,7 +37,6 @@ namespace ConsoleApplication
         {
             SerialPort test = (SerialPort)sender;
             String message = test.ReadLine();
-            Console.WriteLine("> " + message);
             if (message.Length < 5)
                 return;
             int sender_id = message[0] - '0';
@@ -49,8 +47,17 @@ namespace ConsoleApplication
             if (sender_id != 1 && sender_id != 2)
                 return;
             if (!buggyhash.ContainsKey(command))
-                return;
-            buggyhash[command](sender_id);
+                defaultHandler?.Invoke(sender_id, command);
+            else
+                buggyhash[command](sender_id);
+        }
+        public void addCommand(string command, Action<int> handler)
+        {
+            buggyhash.Add(command, handler);
+        }
+        public void setDefaultHandler(Action<int, string> handler)
+        {
+            defaultHandler = handler;
         }
     }
 }
