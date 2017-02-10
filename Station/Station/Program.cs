@@ -10,6 +10,11 @@ namespace Station
     {
         static void Main(string[] args)
         {
+            Communications communicator = new Communications();
+            while (true)
+            {
+                
+            }
         }
     }
 }
