@@ -1,13 +1,21 @@
+#pragma once
+
+#include "HashMap.h"
+#include "Functions.h"
+
+#include <Arduino.h>
+
 class CommTrans{
   public:
-    CommTrans();
+    CommTrans() {}
+    void init();
     void writeXbee(String command);
     void processCommand(char c);
-    void init();
+    void addHandler(String command, VoidFunction handler);
 
   private:
-     String command;
-     short send_ID;
-     short revi_ID;
-}
+    String message;
+    HashMap handlers;
+    static const short my_ID = 1;
+};
 
