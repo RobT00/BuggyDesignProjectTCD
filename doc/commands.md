@@ -18,6 +18,7 @@ GANTRY3 | Passing under Gantry 3
 PARKED | When the buggy has stopped after being requested to park with a PARK
 OBSTACLE | Informs the station that an obstacle has appeared in the path of the buggy and therefore it has temporarily stopped
 PATHCLEAR | Informs the station that the obstacle has been removed and the buggy is resuming travel
+INVALID | An invalid message has been recieved from the station, addressed to this buggy
 
 ### Commands sent by the station to one of the buggies:
 
