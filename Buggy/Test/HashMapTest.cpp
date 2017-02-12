@@ -3,59 +3,50 @@
 
 #include <iostream>
 #include <cassert>
+#include <vector>
+#include <string>
 
 using namespace std;
 
-int handlerResult = 0;
+class Integer {
+    private:
+        mutable int i;
 
-void stopHandler() {
-    handlerResult = 1;
-}
+    public:
+        Integer(int initial) : i(initial) {}
+        Integer() : Integer(0) {};
+        int get() const { return i; }
+        void increment() const { i++; }
+};
 
-void goHandler() {
-    handlerResult = 2;
-}
-
-void leftHandler() {
-    handlerResult = 3;
-}
-
-void rightHandler() {
-    handlerResult = 4;
-}
+static const Integer handlerResult;
 
 int main() {
+    const vector<const char*> commands = {
+        "PING",
+        "PONG",
+        "LED",
+        "CLOCK",
+        "ACLOCK",
+        "GO",
+        "STOP",
+        "STRAIGHT",
+        "PARK"
+    };
+
     HashMap map;
-    map.add("stop", &stopHandler);
-    map.add("go", &goHandler);
-    map.add("left", &leftHandler);
-    map.add("right", &rightHandler);
+    for (unsigned int i = 0; i < commands.size(); i++) {
+        map.add(commands[i], [] { handlerResult.increment(); });
+    }
 
-    assert(map.size() == 4);
+    assert(map.size() == commands.size());
 
-    VoidFunction f;
-
-    f = map.get("stop");
-    assert(f != nullptr);
-    f();
-    assert(handlerResult == 1);
-
-    f = map.get("go");
-    assert(f != nullptr);
-    f();
-    assert(handlerResult == 2);
-
-    f = map.get("left");
-    assert(f != nullptr);
-    f();
-    assert(handlerResult == 3);
-
-    f = map.get("right");
-    assert(f != nullptr);
-    f();
-    assert(handlerResult == 4);
-
-    assert(map.get("abc") == nullptr);
+    for (unsigned int i = 0; i < commands.size(); i++) {
+        VoidFunction f = map.get(commands[i]);
+        assert(f != nullptr);
+        f();
+        assert(handlerResult.get() == i + 1);
+    }
 
     cout << "Tests passed" << endl;
 
