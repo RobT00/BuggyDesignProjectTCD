@@ -2,7 +2,7 @@
 
 class MotorControls {
   private:
-    short bcc_pin = 1; // TODO: Change to actual pin number
+    static const short bcc_pin = 1; // TODO: Change to actual pin number
 
   public:
     MotorControls();
