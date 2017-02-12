@@ -1,6 +1,6 @@
 #include "MotorControls.h"
 
-#include "Arduino.h"
+#include <Arduino.h>
 
 MotorControls::MotorControls() {
   pinMode(bcc_pin, OUTPUT);

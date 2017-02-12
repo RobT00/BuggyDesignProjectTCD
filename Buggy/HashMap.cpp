@@ -5,7 +5,7 @@ HashMap::~HashMap() {
     delete[] _handlers;
 }
 
-void HashMap::add(cstring key, VoidFunction handler) {
+void HashMap::add(String key, VoidFunction handler) {
     hash_t hash = hashString(key);
     hash_t* newKeys = new hash_t[_size + 1];
     VoidFunction* newHandlers = new VoidFunction[_size + 1];
@@ -20,7 +20,7 @@ void HashMap::add(cstring key, VoidFunction handler) {
             delete[] newHandlers;
             _handlers[i] = handler;
             return;
-        }else {
+        } else {
             break;
         }
     }
@@ -38,7 +38,7 @@ void HashMap::add(cstring key, VoidFunction handler) {
     _size++;
 }
 
-VoidFunction HashMap::get(cstring key) const {
+VoidFunction HashMap::get(String key) const {
     hash_t hash = hashString(key);
     size_t lo = 0,
            hi = _size,
@@ -56,12 +56,12 @@ VoidFunction HashMap::get(cstring key) const {
     return nullptr;
 }
 
-HashMap::hash_t HashMap::hashString(cstring string) {
+HashMap::hash_t HashMap::hashString(String string) {
     hash_t hash = 5381;
-    char c;
 
-    while ((c = *string++))
-        hash = ((hash << 5) + hash) ^ c;
+    for (short i = 0; i < string.length(); i++) {
+        hash = ((hash << 5) + hash) ^ string[i];
+    }
 
     return hash;
 }
