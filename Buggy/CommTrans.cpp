@@ -8,6 +8,7 @@ void CommTrans::writeXbee(String command){
   Serial.print(" ");
   Serial.print(command);
   Serial.print('\n');
+  Serial.flush();
 }
 
 void CommTrans::processCommand(char c){
