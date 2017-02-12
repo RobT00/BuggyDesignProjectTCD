@@ -8,6 +8,7 @@ void CommTrans::writeXbee(String command){
   Serial.print(" ");
   Serial.print(command);
   Serial.print('\n');
+  Serial.flush();
 }
 
 void CommTrans::processCommand(char c){
@@ -36,8 +37,8 @@ void CommTrans::processCommand(char c){
   VoidFunction f = handlers.get(command);
   if(f != NULL){
     f();
-  } else {
-    writeXbee("INVALID");
+  } else if(defaultHandler != NULL) {
+    defaultHandler();
   }
 }
 
@@ -52,4 +53,8 @@ void CommTrans::init() {
 
 void CommTrans::addHandler(String command, VoidFunction handler) {
   handlers.add(command, handler);
+}
+
+void CommTrans::setDefaultHandler(VoidFunction handler) {
+  defaultHandler = handler;
 }

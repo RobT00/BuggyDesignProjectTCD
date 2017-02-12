@@ -18,9 +18,19 @@ namespace Station
                 string input = Console.ReadLine();
                 if (input.Length < 3)
                 {
+                    Console.WriteLine("Station: Message too short");
                     continue;
                 }
-                int ID = input[0] - 0;
+                if (!Char.IsDigit(input[0]))
+                {
+                    Console.WriteLine("Station: Start message with reciever ID");
+                    continue;
+                }
+                int ID = input[0] - '0';
+                if (station.getBuggyForID(ID) == null)
+                {
+                    Console.WriteLine("Station: No buggy with given ID");
+                }
                 string command = input.Substring(2);
                 switch (command)
                 {

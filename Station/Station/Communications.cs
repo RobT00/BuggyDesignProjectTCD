@@ -31,7 +31,6 @@ namespace ConsoleApplication
         {
             int sender_id = 0;
             port.Write(sender_id + " " + buggy_id + " " + command + "\n");
-            Thread.Sleep(200);
         }
         public void recievedData(object sender, SerialDataReceivedEventArgs e)
         {

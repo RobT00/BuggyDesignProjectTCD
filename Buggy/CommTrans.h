@@ -12,10 +12,12 @@ class CommTrans{
     void writeXbee(String command);
     void processCommand(char c);
     void addHandler(String command, VoidFunction handler);
+    void setDefaultHandler(VoidFunction handler);
 
   private:
     String message;
     HashMap handlers;
+    VoidFunction defaultHandler = NULL;
     static const short my_ID = 1;
 };
 
