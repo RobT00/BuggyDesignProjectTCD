@@ -6,8 +6,8 @@ class MotorControls {
 
   public:
     MotorControls();
-    void leftOverride();
-    void rightOverride();
-    void go();
-    void stop();
+    void leftOverride() const;
+    void rightOverride() const;
+    void go() const;
+    void stop() const;
 };

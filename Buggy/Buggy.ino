@@ -1,18 +1,16 @@
 #include "CommTrans.h"
-#include "MotorControls.h"
+#include "Buggy.h"
 
 CommTrans comm;
-
-void flashLED();
+Buggy* buggy;
 
 void setup() {
-  pinMode(LED_BUILTIN, OUTPUT);
-
   comm.init();
+  buggy = new Buggy(&comm);
   comm.setDefaultHandler([] { comm.writeXbee("INVALID"); });
   comm.addHandler("PING", [] { comm.writeXbee("PONG"); });
   comm.addHandler("PONG", [] { comm.writeXbee("PING"); });
-  comm.addHandler("LED", [] { flashLED(); });
+  comm.addHandler("LED", [] { buggy->flashLED(); });
 }
 
 void loop() {
@@ -25,10 +23,4 @@ void serialEvent(){
     char message = Serial.read();
     comm.processCommand(message);
   }
-}
-
-void flashLED() {
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(300);
-  digitalWrite(LED_BUILTIN, LOW);
 }
