@@ -1,3 +1,4 @@
+#ifdef TEST
 #include "../Functions.h"
 #include "../HashMap.h"
 
@@ -52,3 +53,4 @@ int main() {
 
     return 0;
 }
+#endif

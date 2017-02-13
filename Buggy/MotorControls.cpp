@@ -5,28 +5,32 @@
 MotorControls::MotorControls() {
   pinMode(bcc_pin, OUTPUT);
   digitalWrite(bcc_pin, LOW);
+  delay(20);
+  stop();
+}
+
+void MotorControls::write(short duration) const {
+  if (duration > 20) {
+    return;
+  }
+  digitalWrite(bcc_pin, HIGH);
+  delay(duration);
+  digitalWrite(bcc_pin, LOW);
+  delay(20 - duration);
 }
 
 void MotorControls::leftOverride() const {
-  digitalWrite(bcc_pin, HIGH);
-  delay(6);
-  digitalWrite(bcc_pin, LOW);
+  write(6);
 }
 
 void MotorControls::rightOverride() const {
-  digitalWrite(bcc_pin, HIGH);
-  delay(8);
-  digitalWrite(bcc_pin, LOW);
+  write(8);
 }
 
 void MotorControls::go() const {
-  digitalWrite(bcc_pin, HIGH);
-  delay(4);
-  digitalWrite(bcc_pin, LOW);
+  write(4);
 }
 
 void MotorControls::stop() const {
-  digitalWrite(bcc_pin, HIGH);
-  delay(2);
-  digitalWrite(bcc_pin, LOW);
+  write(2);
 }
