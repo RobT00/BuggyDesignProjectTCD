@@ -11,11 +11,14 @@ void setup() {
   comm.addHandler("PING", [] { comm.writeXbee("PONG"); });
   comm.addHandler("PONG", [] { comm.writeXbee("PING"); });
   comm.addHandler("LED", [] { buggy->flashLED(); });
+  comm.addHandler("GO", [] { buggy->go(); });
+  comm.addHandler("STOP", [] { buggy->stop1(); });
+
+  attachInterrupt(digitalPinToInterrupt(Buggy::IR_PIN), IR_ISR, RISING);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-
+  buggy->detectGantry();
 }
 
 void serialEvent(){
@@ -24,3 +27,8 @@ void serialEvent(){
     comm.processCommand(message);
   }
 }
+
+void IR_ISR(){
+  buggy->gantry_ISR();
+}
+
