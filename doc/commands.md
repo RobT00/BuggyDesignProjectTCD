@@ -15,6 +15,7 @@ PING | Response to PONG
 GANTRY1 | Passing under Gantry 1
 GANTRY2 | Passing under Gantry 2
 GANTRY3 | Passing under Gantry 3
+GANTRY_INVALID | The buggy detected a gantry, but its signature did not match any of the gantries
 PARKED | When the buggy has stopped after being requested to park with a PARK
 OBSTACLE | Informs the station that an obstacle has appeared in the path of the buggy and therefore it has temporarily stopped
 PATHCLEAR | Informs the station that the obstacle has been removed and the buggy is resuming travel
