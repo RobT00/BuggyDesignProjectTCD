@@ -47,7 +47,7 @@ void CommTrans::init() {
   Serial.print("+++");
   delay(1500);
   Serial.println("ATID 6968, CH C, CN");
-  delay(1100);
+  delay(11000);
   while(Serial.read() != -1) {};
 }
 
