@@ -1,7 +1,7 @@
 #include "CommTrans.h"
 #include "Arduino.h"
 
-void CommTrans::writeXbee(String command){
+void CommTrans::writeXbee(String command) const {
   Serial.print(my_ID);
   Serial.print(" ");
   Serial.print(0);
@@ -11,7 +11,7 @@ void CommTrans::writeXbee(String command){
   Serial.flush();
 }
 
-void CommTrans::processCommand(char c){
+void CommTrans::processCommand(char c) {
   if(c != '\n') {
     message += c;
     return;
@@ -42,7 +42,7 @@ void CommTrans::processCommand(char c){
   }
 }
 
-void CommTrans::init() {
+void CommTrans::init() const {
   Serial.begin(9600);
   Serial.print("+++");
   delay(1500);

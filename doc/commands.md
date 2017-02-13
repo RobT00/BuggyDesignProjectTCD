@@ -12,6 +12,8 @@ Command | Explanation
 --- | ---
 PONG | Response to PING
 PING | Response to PONG
+GOING | Buggy is is going after recieveing a GO command
+STOPPED | Buggy stopped after receiving a STOP command
 GANTRY1 | Passing under Gantry 1
 GANTRY2 | Passing under Gantry 2
 GANTRY3 | Passing under Gantry 3

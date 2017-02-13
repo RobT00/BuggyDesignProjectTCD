@@ -12,7 +12,7 @@ void setup() {
   comm.addHandler("PONG", [] { comm.writeXbee("PING"); });
   comm.addHandler("LED", [] { buggy->flashLED(); });
   comm.addHandler("GO", [] { buggy->go(); });
-  comm.addHandler("STOP", [] { buggy->stop1(); });
+  comm.addHandler("STOP", [] { buggy->stop(); });
 
   attachInterrupt(digitalPinToInterrupt(Buggy::IR_PIN), IR_ISR, RISING);
 }
@@ -31,4 +31,3 @@ void serialEvent(){
 void IR_ISR(){
   buggy->gantry_ISR();
 }
-
