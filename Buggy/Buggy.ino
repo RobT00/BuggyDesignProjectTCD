@@ -18,7 +18,7 @@ void setup() {
 }
 
 void loop() {
-  buggy->detectGantry();
+  buggy->update();
 }
 
 void serialEvent(){
@@ -28,6 +28,6 @@ void serialEvent(){
   }
 }
 
-void IR_ISR(){
+void IR_ISR() {
   buggy->gantry_ISR();
 }
