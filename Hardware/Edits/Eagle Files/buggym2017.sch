@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="8.0.0">
+<eagle version="7.7.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -9612,10 +9612,10 @@ Based on the following sources:
 <instance part="C1" gate="G$1" x="-7.62" y="-12.7"/>
 <instance part="GND7" gate="1" x="-7.62" y="-25.4"/>
 <instance part="FRAME1" gate="G$1" x="-93.98" y="-60.96"/>
-<instance part="BUGGY_CON" gate="G$1" x="-48.26" y="22.86" rot="R180"/>
+<instance part="BUGGY_CON" gate="G$1" x="-50.8" y="22.86" rot="R180"/>
 <instance part="GND1" gate="1" x="-35.56" y="15.24"/>
 <instance part="GND3" gate="1" x="-66.04" y="0"/>
-<instance part="IC1-NOR" gate="A" x="22.86" y="91.44"/>
+<instance part="IC1-NOR" gate="A" x="20.32" y="91.44"/>
 <instance part="IC1-NOR" gate="B" x="22.86" y="71.12"/>
 <instance part="IC2-OR" gate="A" x="50.8" y="91.44"/>
 <instance part="IC2-OR" gate="B" x="50.8" y="71.12"/>
@@ -9634,7 +9634,7 @@ Based on the following sources:
 </segment>
 <segment>
 <pinref part="BUGGY_CON" gate="G$1" pin="6'"/>
-<wire x1="-55.88" y1="25.4" x2="-63.754" y2="25.4" width="0.1524" layer="91"/>
+<wire x1="-58.42" y1="25.4" x2="-63.754" y2="25.4" width="0.1524" layer="91"/>
 <label x="-62.484" y="25.4" size="1.778" layer="95"/>
 </segment>
 </net>
@@ -9673,7 +9673,7 @@ Based on the following sources:
 <segment>
 <wire x1="73.66" y1="5.08" x2="73.66" y2="10.16" width="0.1524" layer="91"/>
 <pinref part="IC4" gate="G$1" pin="VCC2"/>
-<label x="71.12" y="5.08" size="1.778" layer="95"/>
+<label x="73.66" y="5.08" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="C1" gate="G$1" pin="+"/>
@@ -9690,7 +9690,7 @@ Based on the following sources:
 <junction x="7.62" y="-7.62"/>
 <pinref part="BUGGY_CON" gate="G$1" pin="7"/>
 <label x="-35.56" y="22.86" size="1.778" layer="95"/>
-<wire x1="-7.62" y1="22.86" x2="-40.64" y2="22.86" width="0.1524" layer="91"/>
+<wire x1="-7.62" y1="22.86" x2="-43.18" y2="22.86" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="IC1-NOR" gate="P" pin="VDD"/>
@@ -9720,13 +9720,13 @@ Based on the following sources:
 <pinref part="GND1" gate="1" pin="GND"/>
 <pinref part="BUGGY_CON" gate="G$1" pin="8"/>
 <wire x1="-35.56" y1="17.78" x2="-35.56" y2="20.32" width="0.1524" layer="91"/>
-<wire x1="-35.56" y1="20.32" x2="-40.64" y2="20.32" width="0.1524" layer="91"/>
+<wire x1="-35.56" y1="20.32" x2="-43.18" y2="20.32" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND3" gate="1" pin="GND"/>
 <wire x1="-66.04" y1="2.54" x2="-66.04" y2="7.62" width="0.1524" layer="91"/>
 <pinref part="BUGGY_CON" gate="G$1" pin="13'"/>
-<wire x1="-66.04" y1="7.62" x2="-55.88" y2="7.62" width="0.1524" layer="91"/>
+<wire x1="-66.04" y1="7.62" x2="-58.42" y2="7.62" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="IC1-NOR" gate="P" pin="VSS"/>
@@ -9761,7 +9761,7 @@ Based on the following sources:
 </segment>
 <segment>
 <pinref part="IC1-NOR" gate="A" pin="I1"/>
-<wire x1="15.24" y1="88.9" x2="10.16" y2="88.9" width="0.1524" layer="91"/>
+<wire x1="12.7" y1="88.9" x2="7.62" y2="88.9" width="0.1524" layer="91"/>
 <label x="7.62" y="86.36" size="1.778" layer="95"/>
 </segment>
 <segment>
@@ -9773,17 +9773,17 @@ Based on the following sources:
 <net name="R_EYE" class="0">
 <segment>
 <pinref part="BUGGY_CON" gate="G$1" pin="3'"/>
-<wire x1="-55.88" y1="33.02" x2="-63.5" y2="33.02" width="0.1524" layer="91"/>
+<wire x1="-58.42" y1="33.02" x2="-63.5" y2="33.02" width="0.1524" layer="91"/>
 <label x="-63.5" y="33.02" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="IC1-NOR" gate="A" pin="I0"/>
-<wire x1="15.24" y1="93.98" x2="10.16" y2="93.98" width="0.1524" layer="91"/>
+<wire x1="12.7" y1="93.98" x2="10.16" y2="93.98" width="0.1524" layer="91"/>
 <label x="7.62" y="93.98" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="BUGGY_CON" gate="G$1" pin="3"/>
-<wire x1="-40.64" y1="33.02" x2="-35.56" y2="33.02" width="0.1524" layer="91"/>
+<wire x1="-43.18" y1="33.02" x2="-35.56" y2="33.02" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="IC2-OR" gate="B" pin="I0"/>
@@ -9794,7 +9794,7 @@ Based on the following sources:
 <net name="L_EYE" class="0">
 <segment>
 <pinref part="BUGGY_CON" gate="G$1" pin="4'"/>
-<wire x1="-55.88" y1="30.48" x2="-63.5" y2="30.48" width="0.1524" layer="91"/>
+<wire x1="-58.42" y1="30.48" x2="-63.5" y2="30.48" width="0.1524" layer="91"/>
 <label x="-63.5" y="30.48" size="1.778" layer="95"/>
 </segment>
 <segment>
@@ -9804,7 +9804,7 @@ Based on the following sources:
 </segment>
 <segment>
 <pinref part="BUGGY_CON" gate="G$1" pin="4"/>
-<wire x1="-40.64" y1="30.48" x2="-35.56" y2="30.48" width="0.1524" layer="91"/>
+<wire x1="-43.18" y1="30.48" x2="-35.56" y2="30.48" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="IC2-OR" gate="A" pin="I0"/>
@@ -9815,7 +9815,7 @@ Based on the following sources:
 <net name="N$3" class="0">
 <segment>
 <pinref part="BUGGY_CON" gate="G$1" pin="1"/>
-<wire x1="-40.64" y1="38.1" x2="-27.94" y2="38.1" width="0.1524" layer="91"/>
+<wire x1="-43.18" y1="38.1" x2="-27.94" y2="38.1" width="0.1524" layer="91"/>
 <wire x1="-27.94" y1="38.1" x2="-27.94" y2="0" width="0.1524" layer="91"/>
 <wire x1="-27.94" y1="0" x2="109.22" y2="0" width="0.1524" layer="91"/>
 <wire x1="109.22" y1="0" x2="109.22" y2="20.32" width="0.1524" layer="91"/>
@@ -9829,14 +9829,14 @@ Based on the following sources:
 <pinref part="IC4" gate="G$1" pin="2Y"/>
 <wire x1="66.04" y1="20.32" x2="73.66" y2="20.32" width="0.1524" layer="91"/>
 <pinref part="BUGGY_CON" gate="G$1" pin="12"/>
-<wire x1="-40.64" y1="10.16" x2="66.04" y2="10.16" width="0.1524" layer="91"/>
+<wire x1="-43.18" y1="10.16" x2="66.04" y2="10.16" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$6" class="0">
 <segment>
 <pinref part="BUGGY_CON" gate="G$1" pin="2"/>
 <pinref part="IC4" gate="G$1" pin="1Y"/>
-<wire x1="-40.64" y1="35.56" x2="73.66" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="-43.18" y1="35.56" x2="73.66" y2="35.56" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="BCC_COM_LINE" class="0">
@@ -9847,7 +9847,7 @@ Based on the following sources:
 </segment>
 <segment>
 <pinref part="BUGGY_CON" gate="G$1" pin="5"/>
-<wire x1="-40.64" y1="27.94" x2="-30.48" y2="27.94" width="0.1524" layer="91"/>
+<wire x1="-43.18" y1="27.94" x2="-30.48" y2="27.94" width="0.1524" layer="91"/>
 <label x="-39.116" y="28.702" size="1.778" layer="95"/>
 </segment>
 </net>
@@ -9855,7 +9855,7 @@ Based on the following sources:
 <segment>
 <pinref part="IC1-NOR" gate="A" pin="O"/>
 <pinref part="IC2-OR" gate="A" pin="I1"/>
-<wire x1="30.48" y1="91.44" x2="43.18" y2="91.44" width="0.1524" layer="91"/>
+<wire x1="27.94" y1="91.44" x2="43.18" y2="91.44" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="LINK_2" class="0">
@@ -9872,9 +9872,9 @@ Based on the following sources:
 <label x="60.96" y="91.44" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="IC4" gate="G$1" pin="2A"/>
-<wire x1="71.12" y1="15.24" x2="73.66" y2="15.24" width="0.1524" layer="91"/>
-<label x="71.12" y="12.7" size="1.778" layer="95"/>
+<pinref part="IC4" gate="G$1" pin="3A"/>
+<wire x1="104.14" y1="15.24" x2="106.68" y2="15.24" width="0.1524" layer="91"/>
+<label x="104.14" y="12.7" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="RM" class="0">
@@ -9884,9 +9884,9 @@ Based on the following sources:
 <label x="60.96" y="71.12" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="IC4" gate="G$1" pin="3A"/>
-<wire x1="104.14" y1="15.24" x2="106.68" y2="15.24" width="0.1524" layer="91"/>
-<label x="104.14" y="12.7" size="1.778" layer="95"/>
+<pinref part="IC4" gate="G$1" pin="2A"/>
+<wire x1="73.66" y1="15.24" x2="71.12" y2="15.24" width="0.1524" layer="91"/>
+<label x="71.12" y="12.7" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>
