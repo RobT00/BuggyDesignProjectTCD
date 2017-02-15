@@ -6,25 +6,39 @@
 #include <Arduino.h>
 
 class Buggy {
-    private:
-        const CommTrans comms;
-        const MotorControls motor;
+  private:
+    const CommTrans *comms;
+    const MotorControls motor;
 
-        bool isGoing = false;
+    bool isGoing = false;
+    unsigned long travelledTime = 0l;
+    unsigned long lastGoTime = 0l;
+ 
+    volatile bool irInterrupt = false;
+    volatile bool underGantry = false;
+    unsigned long atGantryAt = 0l;
 
-        unsigned long travelledTime = 0l;
-        unsigned long lastGoTime = 0l;
+    void detectGantry();
+    int readGantry() const;
+    unsigned long timeTravelledSinceGantry() const;
 
-    public:
-        Buggy() = delete;
-        Buggy(CommTrans *c) : comms(comms) {
-            pinMode(LED_BUILTIN, OUTPUT);
-        };
+  public:
+    static const short IR_PIN = 2;
+    static const short LED_PIN = 13;
+  
+    Buggy() = delete;
+    Buggy(CommTrans *c) : comms(c) {
+      pinMode(LED_PIN, OUTPUT);
+      pinMode(IR_PIN, INPUT);
+    };
 
-        void go();
-        void stop();
+    void go();
+    void stop();
 
-        void flashLED() const;
+    void flashLED() const;
 
-        unsigned long getTravelledTime() const;
+    void update();
+    void gantry_ISR();
+
+    unsigned long getTravelledTime() const;
 };

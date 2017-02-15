@@ -27,7 +27,6 @@ class HashMap {
          * Adds handler to the map for the given command
          * Will overwrite previous handler if key already exists!
          */
-
 #ifndef TEST
         void add(String key, VoidFunction handler);
 #endif
