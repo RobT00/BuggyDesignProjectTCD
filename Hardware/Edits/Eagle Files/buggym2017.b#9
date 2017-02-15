@@ -9,20 +9,6 @@
 <grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="yes" altdistance="0.025" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="yes" active="yes"/>
-<layer number="2" name="Route2" color="1" fill="3" visible="no" active="no"/>
-<layer number="3" name="Route3" color="4" fill="3" visible="no" active="no"/>
-<layer number="4" name="Route4" color="1" fill="4" visible="no" active="no"/>
-<layer number="5" name="Route5" color="4" fill="4" visible="no" active="no"/>
-<layer number="6" name="Route6" color="1" fill="8" visible="no" active="no"/>
-<layer number="7" name="Route7" color="4" fill="8" visible="no" active="no"/>
-<layer number="8" name="Route8" color="1" fill="2" visible="no" active="no"/>
-<layer number="9" name="Route9" color="4" fill="2" visible="no" active="no"/>
-<layer number="10" name="Route10" color="1" fill="7" visible="no" active="no"/>
-<layer number="11" name="Route11" color="4" fill="7" visible="no" active="no"/>
-<layer number="12" name="Route12" color="1" fill="5" visible="no" active="no"/>
-<layer number="13" name="Route13" color="4" fill="5" visible="no" active="no"/>
-<layer number="14" name="Route14" color="1" fill="6" visible="no" active="no"/>
-<layer number="15" name="Route15" color="4" fill="6" visible="no" active="no"/>
 <layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="yes"/>
 <layer number="17" name="Pads" color="2" fill="1" visible="yes" active="yes"/>
 <layer number="18" name="Vias" color="2" fill="1" visible="yes" active="yes"/>
@@ -2641,44 +2627,6 @@ package type P</description>
 </package>
 </packages>
 </library>
-<library name="40xx">
-<description>&lt;b&gt;CMOS Logic Devices, 4000 Series&lt;/b&gt;&lt;p&gt;
-Based on the following sources:
-&lt;ul&gt;
-&lt;li&gt;Motorola &lt;i&gt;CMOS LOGIC DATA&lt;/i&gt;; book, 02/88, DL131 REV 1
-&lt;li&gt;http://www.elexp.com
-&lt;li&gt;http://www.intersil.com
-&lt;li&gt;http://www.ls3c.com.tw/product/1/COMOS.html
-&lt;/ul&gt;
-&lt;author&gt;Created by librarian@cadsoft.de&lt;/author&gt;</description>
-<packages>
-<package name="DIL14">
-<description>&lt;b&gt;Dual In Line Package&lt;/b&gt;</description>
-<wire x1="8.89" y1="2.921" x2="-8.89" y2="2.921" width="0.1524" layer="21"/>
-<wire x1="-8.89" y1="-2.921" x2="8.89" y2="-2.921" width="0.1524" layer="21"/>
-<wire x1="8.89" y1="2.921" x2="8.89" y2="-2.921" width="0.1524" layer="21"/>
-<wire x1="-8.89" y1="2.921" x2="-8.89" y2="1.016" width="0.1524" layer="21"/>
-<wire x1="-8.89" y1="-2.921" x2="-8.89" y2="-1.016" width="0.1524" layer="21"/>
-<wire x1="-8.89" y1="1.016" x2="-8.89" y2="-1.016" width="0.1524" layer="21" curve="-180"/>
-<pad name="1" x="-7.62" y="-3.81" drill="0.8128" shape="long" rot="R90"/>
-<pad name="2" x="-5.08" y="-3.81" drill="0.8128" shape="long" rot="R90"/>
-<pad name="7" x="7.62" y="-3.81" drill="0.8128" shape="long" rot="R90"/>
-<pad name="8" x="7.62" y="3.81" drill="0.8128" shape="long" rot="R90"/>
-<pad name="3" x="-2.54" y="-3.81" drill="0.8128" shape="long" rot="R90"/>
-<pad name="4" x="0" y="-3.81" drill="0.8128" shape="long" rot="R90"/>
-<pad name="6" x="5.08" y="-3.81" drill="0.8128" shape="long" rot="R90"/>
-<pad name="5" x="2.54" y="-3.81" drill="0.8128" shape="long" rot="R90"/>
-<pad name="9" x="5.08" y="3.81" drill="0.8128" shape="long" rot="R90"/>
-<pad name="10" x="2.54" y="3.81" drill="0.8128" shape="long" rot="R90"/>
-<pad name="11" x="0" y="3.81" drill="0.8128" shape="long" rot="R90"/>
-<pad name="12" x="-2.54" y="3.81" drill="0.8128" shape="long" rot="R90"/>
-<pad name="13" x="-5.08" y="3.81" drill="0.8128" shape="long" rot="R90"/>
-<pad name="14" x="-7.62" y="3.81" drill="0.8128" shape="long" rot="R90"/>
-<text x="-9.271" y="-3.048" size="1.27" layer="25" ratio="10" rot="R90">&gt;NAME</text>
-<text x="-6.731" y="-0.635" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
-</package>
-</packages>
-</library>
 </libraries>
 <attributes>
 </attributes>
@@ -2877,8 +2825,6 @@ design rules under a new name.</description>
 <attribute name="OC_NEWARK" value="89K0732" x="82.55" y="54.61" size="1.778" layer="27" rot="R270" display="off"/>
 </element>
 <element name="BUGGY_CON" library="2E10" package="2E10BOARD" value="2E10HDR" x="26.67" y="38.1"/>
-<element name="IC1" library="40xx" package="DIL14" value="4001N" x="54.61" y="12.7" rot="R270"/>
-<element name="IC2" library="40xx" package="DIL14" value="4075N" x="74.93" y="12.7" rot="R270"/>
 </elements>
 <signals>
 <signal name="GND2">
@@ -2898,10 +2844,6 @@ design rules under a new name.</description>
 </signal>
 <signal name="LO">
 <contactref element="IC3" pad="7"/>
-<contactref element="IC1" pad="6"/>
-<contactref element="IC2" pad="8"/>
-<wire x1="50.8" y1="7.62" x2="58.42" y2="58.42" width="0" layer="19" extent="1-1"/>
-<wire x1="78.74" y1="5.08" x2="50.8" y2="7.62" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$9">
 <contactref element="IC3" pad="6"/>
@@ -2986,26 +2928,12 @@ design rules under a new name.</description>
 </signal>
 <signal name="RO">
 <contactref element="IC3" pad="3"/>
-<contactref element="IC1" pad="2"/>
-<contactref element="IC2" pad="5"/>
-<wire x1="50.8" y1="17.78" x2="50.8" y2="55.88" width="0" layer="19" extent="1-1"/>
-<wire x1="71.12" y1="10.16" x2="50.8" y2="17.78" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="R_EYE">
 <contactref element="BUGGY_CON" pad="3'"/>
-<contactref element="IC1" pad="1"/>
-<contactref element="BUGGY_CON" pad="3"/>
-<contactref element="IC2" pad="3"/>
-<wire x1="50.8" y1="20.32" x2="25.4" y2="27.94" width="0" layer="19" extent="1-1"/>
-<wire x1="71.12" y1="15.24" x2="50.8" y2="20.32" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="L_EYE">
 <contactref element="BUGGY_CON" pad="4'"/>
-<contactref element="IC1" pad="5"/>
-<contactref element="BUGGY_CON" pad="4"/>
-<contactref element="IC2" pad="1"/>
-<wire x1="50.8" y1="10.16" x2="25.4" y2="30.48" width="0" layer="19" extent="1-1"/>
-<wire x1="71.12" y1="20.32" x2="50.8" y2="10.16" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="N$3">
 <contactref element="BUGGY_CON" pad="1"/>
@@ -3050,36 +2978,6 @@ design rules under a new name.</description>
 <via x="60.96" y="43.18" extent="1-16" drill="0.6096" shape="square"/>
 <via x="60.96" y="53.34" extent="1-16" drill="0.6096" shape="square"/>
 <wire x1="60.96" y1="53.34" x2="58.42" y2="53.34" width="0.8128" layer="16"/>
-</signal>
-<signal name="VSS">
-<contactref element="IC1" pad="7"/>
-<contactref element="IC2" pad="7"/>
-<wire x1="71.12" y1="5.08" x2="50.8" y2="5.08" width="0" layer="19" extent="1-1"/>
-</signal>
-<signal name="VDD">
-<contactref element="IC1" pad="14"/>
-<contactref element="IC2" pad="14"/>
-<wire x1="58.42" y1="20.32" x2="78.74" y2="20.32" width="0" layer="19" extent="1-1"/>
-</signal>
-<signal name="LINK_1">
-<contactref element="IC1" pad="3"/>
-<contactref element="IC2" pad="2"/>
-<wire x1="50.8" y1="15.24" x2="71.12" y2="17.78" width="0" layer="19" extent="1-1"/>
-</signal>
-<signal name="LINK_2">
-<contactref element="IC1" pad="4"/>
-<contactref element="IC2" pad="4"/>
-<wire x1="50.8" y1="12.7" x2="71.12" y2="12.7" width="0" layer="19" extent="1-1"/>
-</signal>
-<signal name="LM">
-<contactref element="IC2" pad="9"/>
-<contactref element="IC4" pad="7"/>
-<wire x1="78.74" y1="7.62" x2="78.74" y2="48.26" width="0" layer="19" extent="1-1"/>
-</signal>
-<signal name="RM">
-<contactref element="IC2" pad="6"/>
-<contactref element="IC4" pad="10"/>
-<wire x1="71.12" y1="7.62" x2="86.36" y2="48.26" width="0" layer="19" extent="1-1"/>
 </signal>
 </signals>
 </board>
