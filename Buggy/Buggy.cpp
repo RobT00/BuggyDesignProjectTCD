@@ -79,3 +79,7 @@ int Buggy::readGantry() const {
 unsigned long Buggy::timeTravelledSinceGantry() const {
   return getTravelledTime() - atGantryAt;
 }
+
+void Buggy::update() {
+  detectGantry();
+}
