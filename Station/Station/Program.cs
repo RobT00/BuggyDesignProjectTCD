@@ -55,10 +55,9 @@ namespace Station
                     case "GANTRY3":
                         station.getBuggyForID(ID)?.onGantry(3);
                         break;
-                    //case "PARK":
-                    //    station.getBuggyForID(ID)?.goPark();
-                    //    break;
-                    //calling park from withing onGantry function
+                    case "PARK":
+                        station.getBuggyForID(ID)?.buggyParked();
+                        break;
                 }
             }
         }
