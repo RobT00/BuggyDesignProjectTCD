@@ -27,18 +27,10 @@ namespace Station
         public void go()
         {
             comms.send(ID, "GO");
-            int x = last_gantry;
-            if (last_gantry == 0)
-                x = earlyAction();
-            trackState("Go", x);
         }
         public void stop()
         {
             comms.send(ID, "STOP");
-            int x = last_gantry;
-            if (last_gantry == 0)
-                x = earlyAction();
-            trackState("Stop", x);
         }
         public void sendPing()
         {
@@ -64,11 +56,11 @@ namespace Station
         }
         private void goPark()
         {
-            if (direction == Direction.Clockwise)
-                comms.send(ID, "PARKRIGHT"); //Left override will need to be triggered
-            else
-                comms.send(ID, "PARKLEFT"); //Trigger right override
-            
+            //    if (direction == Direction.Clockwise)
+            //        comms.send(ID, "PARKRIGHT"); //Left override will need to be triggered
+            //    else
+            //        comms.send(ID, "PARKLEFT"); //Trigger right override
+            comms.send(ID, "PARK");    
             //Alternatively could send "RIGHT"/"LEFT"?
             //Perhaps there should be a delay here?
             //comms.send(ID, "STOP");
@@ -107,6 +99,20 @@ namespace Station
         public void pongRecieved()
         {
             Program.print("PONG recieved");
+        }
+        public void going()
+        {
+            int x = last_gantry;
+            if (last_gantry == 0)
+                x = earlyAction();
+            trackState("Go", x);
+        }
+        public void stopped()
+        {
+            int x = last_gantry;
+            if (last_gantry == 0)
+                x = earlyAction();
+            trackState("Stop", x);
         }
         private void buggyAction()
         {

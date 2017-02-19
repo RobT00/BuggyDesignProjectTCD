@@ -46,15 +46,15 @@ namespace Station
                     case "STOP":
                         station.getBuggyForID(ID)?.stop();
                         break;
-                    case "GANTRY1":
-                        station.getBuggyForID(ID)?.onGantry(1);
-                        break;
-                    case "GANTRY2":
-                        station.getBuggyForID(ID)?.onGantry(2);
-                        break;
-                    case "GANTRY3":
-                        station.getBuggyForID(ID)?.onGantry(3);
-                        break;
+                    //case "GANTRY1":
+                    //    station.getBuggyForID(ID)?.onGantry(1);
+                    //    break;
+                    //case "GANTRY2":
+                    //    station.getBuggyForID(ID)?.onGantry(2);
+                    //    break;
+                    //case "GANTRY3":
+                    //    station.getBuggyForID(ID)?.onGantry(3);
+                    //    break;
                     case "PARK":
                         station.getBuggyForID(ID)?.buggyParked();
                         break;
