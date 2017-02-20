@@ -13,7 +13,7 @@ void setup() {
   comm.addHandler("LED", [] { buggy->flashLED(); });
   comm.addHandler("GO", [] { buggy->go(); });
   comm.addHandler("STOP", [] { buggy->stop(); });
-  comm.addHandler("PARK", [] { Buggy->park(); });
+  comm.addHandler("PARK", [] { buggy->park(); });
 
   attachInterrupt(digitalPinToInterrupt(Buggy::IR_PIN), IR_ISR, RISING);
 }

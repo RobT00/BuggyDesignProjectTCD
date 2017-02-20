@@ -12,12 +12,12 @@ void CommTrans::writeXbee(String command) const {
 }
 
 void CommTrans::processCommand(char c) {
-  if(c != '\n') {
+  if (c != '\n') {
     message += c;
     return;
   }
 
-  if(message.length() < 5) {
+  if (message.length() < 5) {
     message = "";
     return;
   }
@@ -27,17 +27,17 @@ void CommTrans::processCommand(char c) {
   String command = message.substring(4);
   message = "";
 
-  if(send_ID != 0){
+  if (send_ID != 0) {
     return;
   }
-  if(reci_ID != my_ID){
+  if (reci_ID != my_ID) {
     return;
   }
 
   VoidFunction f = handlers.get(command);
-  if(f != NULL){
+  if (f != NULL) {
     f();
-  } else if(defaultHandler != NULL) {
+  } else if (defaultHandler != NULL) {
     defaultHandler();
   }
 }
@@ -48,7 +48,7 @@ void CommTrans::init() const {
   delay(1500);
   Serial.println("ATID 6968, CH C, CN");
   delay(11000);
-  while(Serial.read() != -1) {};
+  while (Serial.read() != -1) {}
 }
 
 void CommTrans::addHandler(String command, VoidFunction handler) {

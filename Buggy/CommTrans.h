@@ -6,7 +6,7 @@
 #include <Arduino.h>
 
 class CommTrans {
-  public:
+ public:
     CommTrans() {}
     void init() const;
     void writeXbee(String command) const;
@@ -14,7 +14,7 @@ class CommTrans {
     void addHandler(String command, VoidFunction handler);
     void setDefaultHandler(VoidFunction handler);
 
-  private:
+ private:
     String message;
     HashMap handlers;
     VoidFunction defaultHandler = NULL;
