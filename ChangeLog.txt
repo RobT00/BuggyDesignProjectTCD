@@ -1,3 +1,9 @@
+#WEEK 3
+
+FUNCTIONALITY ADDED: Simple hashmap for storing command handlers
+BY WHO: Aron
+
+
 #WEEK 4
 
 FUNCTIONALITY ADDED: Communication framework on the PC side
