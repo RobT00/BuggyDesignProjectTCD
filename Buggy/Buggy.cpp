@@ -1,6 +1,6 @@
 #include "Buggy.h"
 
-void Buggy::go(bool silent = false) {
+void Buggy::go(bool silent ) {
   if (isGoing) {
     return;
   }
@@ -12,7 +12,7 @@ void Buggy::go(bool silent = false) {
   isGoing = true;
 }
 
-void Buggy::stop(bool silent = false) {
+void Buggy::stop(bool silent) {
   if (!isGoing) {
     return;
   }
@@ -67,8 +67,12 @@ void Buggy::detectGantry() {
 
 int Buggy::readGantry() const {
   while(digitalRead(IR_PIN) == HIGH);
-  int pulse = pulseIn(IR_PIN, HIGH);
-
+  int sum = 0;
+  for (short i = 0; i < 4; i++) {
+    sum += pulseIn(IR_PIN, HIGH);
+  }
+  int pulse = sum / 4;
+  
   if (pulse >= 500 && pulse <= 1500) {
     return 1;
   } else if (pulse >= 1500 && pulse <= 2500) {
@@ -94,16 +98,17 @@ void Buggy::updateParking() {
     return; // Do not interfere with other go-stop functionalities
   }
 
-  unsigned long sinceGantry = timeTravelledSinceGantry();
-  if (parkingState == BEFORE_INTERSECTION && sinceGantry > parking_overrideAt) {
-    if (travelDirection == CLOCKWISE) {
+  if (parkingState == BEFORE_INTERSECTION) {
+    if (travelDirection == CLOCKWISE && motor.getState() != LEFT_OVERRIDE) {
       motor.leftOverride();
-    } else {
+    } else if (travelDirection == ANTI_CLOCKWISE && motor.getState() != RIGHT_OVERRIDE) {
       motor.rightOverride();
     }
-    parkingState = IN_INTERSECTION;
-  } else if (parkingState == IN_INTERSECTION && sinceGantry > parking_overrideOffAt) {
-    motor.go(); // Just reset the override, not Buggy::go()
+  }
+
+  unsigned long sinceGantry = timeTravelledSinceGantry();
+  if (parkingState == BEFORE_INTERSECTION && sinceGantry > parking_overrideOffAt) {
+    motor.go();
     parkingState = AFTER_INTERSECTION;
   } else if (parkingState == AFTER_INTERSECTION && sinceGantry > parking_stopAt) {
     stop(true);
