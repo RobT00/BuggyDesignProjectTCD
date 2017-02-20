@@ -6,34 +6,57 @@
 #include <Arduino.h>
 
 class Buggy {
-    private:
-        const CommTrans comms;
-        const MotorControls motor;
+  private:
+    enum ParkingState {
+      NOT_PARKING,
+      BEFORE_INTERSECTION,
+      IN_INTERSECTION,
+      AFTER_INTERSECTION
+    };
+    ParkingState parkingState = NOT_PARKING;
+    const unsigned int parking_overrideAt = 2000;
+    const unsigned int parking_overrideOffAt = 2500;
+    const unsigned int parking_stopAt = 4500;
 
-        bool isGoing = false;
-        bool atGantry = false;
-        bool irInterrupt = false;
+    const CommTrans *comms;
+    const MotorControls motor;
 
-        unsigned long travelledTime = 0l;
-        unsigned long lastGoTime = 0l;
+    bool isGoing = false;
+    Direction travelDirection = CLOCKWISE;
+    unsigned long travelledTime = 0l;
+    unsigned long lastGoTime = 0l;
+ 
+    volatile bool irInterrupt = false;
+    volatile bool underGantry = false;
+    unsigned long atGantryAt = 0l;
 
-        int readGantry() const;
+    void detectGantry();
+    void updateParking();
+    int readGantry() const;
+    unsigned long timeTravelledSinceGantry() const;
 
-    public:
-        static const short IR_PIN = 2;
-    
-        Buggy() = delete;
-        Buggy(CommTrans *c) : comms(comms) {
-            pinMode(LED_BUILTIN, OUTPUT);
-        };
+  public:
+    enum Direction {
+        CLOCKWISE,
+        ANTI_CLOCKWISE
+    };
+    static const short IR_PIN = 2;
+    static const short LED_PIN = 13;
+  
+    Buggy() = delete;
+    Buggy(CommTrans *c) : comms(c) {
+      pinMode(LED_PIN, OUTPUT);
+      pinMode(IR_PIN, INPUT);
+    };
 
-        void go();
-        void stop1();
+    void go(bool silent = false);
+    void stop(bool silent = false);
+    void park();
 
-        void flashLED() const;
+    void flashLED() const;
 
-        void gantry_ISR();
-        void detectGantry();
-        
-        unsigned long getTravelledTime() const;
+    void update();
+    void gantry_ISR();
+
+    unsigned long getTravelledTime() const;
 };

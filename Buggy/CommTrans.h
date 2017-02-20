@@ -5,11 +5,11 @@
 
 #include <Arduino.h>
 
-class CommTrans{
+class CommTrans {
   public:
     CommTrans() {}
-    void init();
-    void writeXbee(String command);
+    void init() const;
+    void writeXbee(String command) const;
     void processCommand(char c);
     void addHandler(String command, VoidFunction handler);
     void setDefaultHandler(VoidFunction handler);
@@ -20,4 +20,3 @@ class CommTrans{
     VoidFunction defaultHandler = NULL;
     static const short my_ID = 1;
 };
-
