@@ -18,6 +18,7 @@ class Buggy {
     volatile bool underGantry = false;
     unsigned long atGantryAt = 0l;
 
+    void detectGantry();
     int readGantry() const;
     unsigned long timeTravelledSinceGantry() const;
 
@@ -27,8 +28,8 @@ class Buggy {
   
     Buggy() = delete;
     Buggy(CommTrans *c) : comms(c) {
-      pinMode(IR_PIN, INPUT);
       pinMode(LED_PIN, OUTPUT);
+      pinMode(IR_PIN, INPUT);
     };
 
     void go();
@@ -36,8 +37,8 @@ class Buggy {
 
     void flashLED() const;
 
+    void update();
     void gantry_ISR();
-    void detectGantry();
 
     unsigned long getTravelledTime() const;
 };
