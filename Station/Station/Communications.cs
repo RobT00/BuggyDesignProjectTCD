@@ -36,6 +36,7 @@ namespace ConsoleApplication
         {
             SerialPort test = (SerialPort)sender;
             String message = test.ReadLine();
+            Console.Write("Buggy> ");
             Console.WriteLine(message);
             if (message.Length < 5)
                 return;

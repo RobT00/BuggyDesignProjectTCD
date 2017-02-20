@@ -56,7 +56,7 @@ namespace Station
                     //    station.getBuggyForID(ID)?.onGantry(3);
                     //    break;
                     case "PARK":
-                        station.getBuggyForID(ID)?.buggyParked();
+                        station.getBuggyForID(ID)?.goPark();
                         break;
                 }
             }
