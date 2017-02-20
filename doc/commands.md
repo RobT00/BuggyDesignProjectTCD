@@ -18,7 +18,7 @@ GANTRY1 | Passing under Gantry 1
 GANTRY2 | Passing under Gantry 2
 GANTRY3 | Passing under Gantry 3
 GANTRY_INVALID | The buggy detected a gantry, but its signature did not match any of the gantries
-PARKED | When the buggy has stopped after being requested to park with a PARK
+PARKED | When the buggy has stopped after being requested to park with a PARK command
 OBSTACLE | Informs the station that an obstacle has appeared in the path of the buggy and therefore it has temporarily stopped
 PATHCLEAR | Informs the station that the obstacle has been removed and the buggy is resuming travel
 INVALID | An invalid message has been recieved from the station, addressed to this buggy
@@ -34,5 +34,4 @@ CLOCK | Informs buggy that it will go clockwise around the track (will be releva
 ACLOCK | Informs buggy that it will go anti-clockwise around the track (will be relevant for levels silver and gold)
 GO | Commands buggy to go, following line
 STOP | Commands buggy to stop immediately
-STRAIGHT | Commands buggy to go straight if it encounters an intersection
 PARK | Commands buggy to turn if it encounters an intersection. Overridden side depends on the orientation sent earlier (clockwise vs anti-clockwise)

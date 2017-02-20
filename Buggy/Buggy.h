@@ -6,12 +6,12 @@
 #include <Arduino.h>
 
 enum Direction {
-        CLOCKWISE,
-        ANTI_CLOCKWISE
-    };
+  CLOCKWISE,
+  ANTI_CLOCKWISE
+};
 
 class Buggy {
-  private:
+ private:
     enum ParkingState {
       NOT_PARKING,
       BEFORE_INTERSECTION,
@@ -38,8 +38,8 @@ class Buggy {
     int readGantry() const;
     unsigned long timeTravelledSinceGantry() const;
 
-  public:
-    
+ public:
+
     static const short IR_PIN = 2;
     static const short LED_PIN = 13;
   
@@ -47,7 +47,7 @@ class Buggy {
     Buggy(CommTrans *c) : comms(c) {
       pinMode(LED_PIN, OUTPUT);
       pinMode(IR_PIN, INPUT);
-      //motor.fullPower();
+      // motor.fullPower();
     };
 
     void go(bool silent = false);
