@@ -1,22 +1,26 @@
 #include "Buggy.h"
 
-void Buggy::go() {
+void Buggy::go(bool silent = false) {
   if (isGoing) {
     return;
   }
   motor.go();
   lastGoTime = millis();
-  comms->writeXbee("GOING");
+  if (!silent) {
+    comms->writeXbee("GOING");
+  }
   isGoing = true;
 }
 
-void Buggy::stop() {
+void Buggy::stop(bool silent = false) {
   if (!isGoing) {
     return;
   }
   motor.stop();
   travelledTime += millis() - lastGoTime;
-  comms->writeXbee("STOPPED");
+  if (!silent) {
+    comms->writeXbee("STOPPED");
+  }
   isGoing = false;
 }
 
@@ -82,4 +86,32 @@ unsigned long Buggy::timeTravelledSinceGantry() const {
 
 void Buggy::update() {
   detectGantry();
+  updateParking();
+}
+
+void Buggy::updateParking() {
+  if (!isGoing) {
+    return; // Do not interfere with other go-stop functionalities
+  }
+
+  unsigned long sinceGantry = timeTravelledSinceGantry();
+  if (parkingState == BEFORE_INTERSECTION && sinceGantry > parking_overrideAt) {
+    if (travelDirection == CLOCKWISE) {
+      motor.leftOverride();
+    } else {
+      motor.rightOverride();
+    }
+    parkingState = IN_INTERSECTION;
+  } else if (parkingState == IN_INTERSECTION && sinceGantry > parking_overrideOffAt) {
+    motor.go(); // Just reset the override, not Buggy::go()
+    parkingState = AFTER_INTERSECTION;
+  } else if (parkingState == AFTER_INTERSECTION && sinceGantry > parking_stopAt) {
+    stop(true);
+    comms->writeXbee("PARKED");
+    parkingState = NOT_PARKING;
+  }
+}
+
+void Buggy::park() {
+  parkingState = BEFORE_INTERSECTION;
 }
