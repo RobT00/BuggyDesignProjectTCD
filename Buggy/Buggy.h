@@ -5,21 +5,24 @@
 
 #include <Arduino.h>
 
+enum Direction {
+        CLOCKWISE,
+        ANTI_CLOCKWISE
+    };
+
 class Buggy {
   private:
     enum ParkingState {
       NOT_PARKING,
       BEFORE_INTERSECTION,
-      IN_INTERSECTION,
       AFTER_INTERSECTION
     };
     ParkingState parkingState = NOT_PARKING;
-    const unsigned int parking_overrideAt = 2000;
-    const unsigned int parking_overrideOffAt = 2500;
-    const unsigned int parking_stopAt = 4500;
+    const unsigned int parking_overrideOffAt = 5000;
+    const unsigned int parking_stopAt = 10000;
 
     const CommTrans *comms;
-    const MotorControls motor;
+    MotorControls motor;
 
     bool isGoing = false;
     Direction travelDirection = CLOCKWISE;
@@ -36,10 +39,7 @@ class Buggy {
     unsigned long timeTravelledSinceGantry() const;
 
   public:
-    enum Direction {
-        CLOCKWISE,
-        ANTI_CLOCKWISE
-    };
+    
     static const short IR_PIN = 2;
     static const short LED_PIN = 13;
   
@@ -47,6 +47,7 @@ class Buggy {
     Buggy(CommTrans *c) : comms(c) {
       pinMode(LED_PIN, OUTPUT);
       pinMode(IR_PIN, INPUT);
+      //motor.fullPower();
     };
 
     void go(bool silent = false);

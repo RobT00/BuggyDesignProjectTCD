@@ -19,18 +19,31 @@ void MotorControls::write(short duration) const {
   delay(20 - duration);
 }
 
-void MotorControls::leftOverride() const {
+void MotorControls::leftOverride() {
+  state = LEFT_OVERRIDE;
   write(6);
 }
 
-void MotorControls::rightOverride() const {
+void MotorControls::rightOverride() {
+  state = RIGHT_OVERRIDE;
   write(8);
 }
 
-void MotorControls::go() const {
+void MotorControls::go() {
+  state = GOING;
   write(4);
 }
 
-void MotorControls::stop() const {
+void MotorControls::stop() {
+  state = STOPPED;
   write(2);
 }
+
+void MotorControls::fullPower() {
+  write(18);
+}
+
+MotorState MotorControls::getState() const {
+  return state;
+}
+

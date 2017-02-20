@@ -1,15 +1,26 @@
 #pragma once
 
+enum MotorState {
+  STOPPED,
+  GOING,
+  LEFT_OVERRIDE,
+  RIGHT_OVERRIDE
+};
+
 class MotorControls {
   private:
     static const short bcc_pin = 3;
+
+    MotorState state = STOPPED;
 
     void write(short duration) const;
 
   public:
     MotorControls();
-    void leftOverride() const;
-    void rightOverride() const;
-    void go() const;
-    void stop() const;
+    void leftOverride();
+    void rightOverride();
+    void go();
+    void stop();
+    void fullPower();
+    MotorState getState() const;
 };
