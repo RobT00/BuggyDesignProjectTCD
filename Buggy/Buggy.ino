@@ -31,4 +31,34 @@ void serialEvent(){
 
 void IR_ISR() {
   buggy->gantry_ISR();
+
+unsigned long currentMillis = millis();
+  
+  if (currentMillis - previousMillis >= interval) {
+   
+    previousMillis = currentMillis;
+  
+    unsigned long value = UltraLoop();
+  Serial.print(" Value ");
+  Serial.println(value);
+
+  if(value < 10){
+    stop(); //stop fxn that is defined elsewhere! Won't move until we say go again.
+    comms->writeXbee("Obstacle");
+    Serial.print("OBSTACLE");
+    obstacle = true;
+  }else if(obstacle == true){
+    comms->writeXbee("PATHCLEAR");
+    go();
+    obstacle = false;
+    Serial.print("PATHCLEAR");
+  }
+  
+ 
+  }
+
+
+
+
+
 }
