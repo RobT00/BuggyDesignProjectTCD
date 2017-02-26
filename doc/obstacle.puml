@@ -1,0 +1,12 @@
+@startuml
+title Obstacle
+participant Buggy as b #4f4
+participant Station as s #44f
+...
+group Obstacle encountered
+    b->s: OBSTACLE
+    ...
+    b->s: PATHCLEAR
+end
+...
+@enduml
