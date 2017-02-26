@@ -1,4 +1,5 @@
 #include "CommTrans.h"
+
 #include "Arduino.h"
 
 void CommTrans::writeXbee(String command) const {
