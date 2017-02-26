@@ -26,3 +26,12 @@ FUNCTIONALITY ADDED: Handling gantries on the C# side
 BY WHO: Rob
 FUNCTIONALITY ADDED: Arduino Buggy coordination class
 BY WHO: Aron
+
+
+#WEEK 6
+FUNCTIONALITY ADDED: Ultrasonic obstacle detection
+BY WHO: Eoin, Alexandra, Aron
+FUNCTIONALITY ADDED: Parking
+BY WHO: Eoin, Rob, Alexandra, Aron
+FUNCTIONALITY ADDED: Full Wizzard of Oz control
+BY WHO: Rob, Eoin, Alexandra, Aron
