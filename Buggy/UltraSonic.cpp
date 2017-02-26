@@ -1,33 +1,40 @@
-#pragma once
-
-#include "Buggy.h"
-#include "CommTrans.h"
-#include "HashMap.h"
-#include "MotorControls.h"
 #include "UltraSonic.h"
 
-unsigned long UltraSonic::UltraLoop(){
-  
-  unsigned long pulse = 0;
-  pinMode(signalPin, OUTPUT);
-  digitalWrite(signalPin,LOW);
-  digitalWrite(signalPin,HIGH);
+#include "Arduino.h"
+
+void UltraSonic::ultraLoop() {
+  unsigned long currentMillis = millis();
+  if (currentMillis - lastPingTime >= pingInterval) {
+    lastPingTime = currentMillis;
+    unsigned long distance = measureDistance();
+    // Serial.print("Value: ");
+    // Serial.println(value);
+    if (obstacle == false && distance < tresholdDistance) {
+      buggy->stop(true);
+      comms->writeXbee("OBSTACLE");
+      obstacle = true;
+    } else if (obstacle == true && distance > tresholdDistance) {
+      buggy->go(true);
+      comms->writeXbee("PATHCLEAR");
+      obstacle = false;
+    }
+  }
+}
+
+unsigned long UltraSonic::measureDistance() const {
+  // Request ultrasonic pulse
+  pinMode(ultraPin, OUTPUT);
+  digitalWrite(ultraPin, LOW);
+  digitalWrite(ultraPin, HIGH);
   delayMicroseconds(10);
-  digitalWrite(signalPin,LOW);
+  digitalWrite(ultraPin, LOW);
 
-  pinMode(signalPin, INPUT);
-    
-  pulse = pulseIn(signalPin, HIGH);
-    
-  double ultrasoundValue = ((pulse/2) * .03432);
-  unsigned long ultrasoundValue1;
-  ultrasoundValue1 = (unsigned long)ultrasoundValue;
-  return ultrasoundValue1;
-       
+  // Recieve distance data
+  pinMode(ultraPin, INPUT);
+  unsigned long pulseLength = 0;
+  pulseLength = pulseIn(ultraPin, HIGH);
 
-
-
-
-
-
+  // Calculate distance
+  double distance = ((pulseLength / 2) * .03432);
+  return (unsigned long) distance;
 }

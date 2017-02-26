@@ -1,8 +1,10 @@
 #include "CommTrans.h"
 #include "Buggy.h"
+#include "UltraSonic.h"
 
 CommTrans comm;
 Buggy* buggy;
+UltraSonic *sonic;
 
 void setup() {
   comm.init();
@@ -16,10 +18,13 @@ void setup() {
   comm.addHandler("PARK", [] { buggy->park(); });
 
   attachInterrupt(digitalPinToInterrupt(Buggy::IR_PIN), IR_ISR, RISING);
+
+  sonic = new UltraSonic(buggy, &comm);
 }
 
 void loop() {
   buggy->update();
+  sonic->ultraLoop();
 }
 
 void serialEvent(){
@@ -31,34 +36,4 @@ void serialEvent(){
 
 void IR_ISR() {
   buggy->gantry_ISR();
-
-unsigned long currentMillis = millis();
-  
-  if (currentMillis - previousMillis >= interval) {
-   
-    previousMillis = currentMillis;
-  
-    unsigned long value = UltraLoop();
-  Serial.print(" Value ");
-  Serial.println(value);
-
-  if(value < 10){
-    stop(); //stop fxn that is defined elsewhere! Won't move until we say go again.
-    comms->writeXbee("Obstacle");
-    Serial.print("OBSTACLE");
-    obstacle = true;
-  }else if(obstacle == true){
-    comms->writeXbee("PATHCLEAR");
-    go();
-    obstacle = false;
-    Serial.print("PATHCLEAR");
-  }
-  
- 
-  }
-
-
-
-
-
 }
