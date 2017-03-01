@@ -7,7 +7,7 @@ Buggy* buggy;
 UltraSonic *sonic;
 
 void setup() {
-  comm = new CommTrans();
+  comm = new CommTrans(1);
   comm->init();
   buggy = new Buggy(comm);
   comm->setDefaultHandler( [] { comm->writeXbee("INVALID"); });

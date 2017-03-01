@@ -10,11 +10,11 @@ class UltraSonic {
   Buggy* buggy;
   const CommTrans* comms;
 
-  const unsigned short groundPin = 5;
-  const unsigned short powerPin = 6;
-  const unsigned short ultraPin = 7;
-  const unsigned long tresholdDistance = 10; // cm
-  const unsigned long pingInterval = 1000; // ms
+  const unsigned short groundPin = 16;
+  const unsigned short powerPin = 17;
+  const unsigned short ultraPin = 18;
+  const unsigned long tresholdDistance = 15; // cm
+  const unsigned long pingInterval = 500; // ms
   unsigned long lastPingTime = 0;
 
   bool obstacle = false;
