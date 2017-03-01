@@ -66,10 +66,10 @@ VoidFunction HashMap::get(cstring key) const {
     return nullptr;
 }
 
-HashMap::hash_t HashMap::hashString(cstring string) {
+HashMap::hash_t HashMap::hashString(cstring str) {
     hash_t hash = 5381;
     char c;
-    while ((c = *string++)) {
+    while ((c = *str++)) {
         hash = ((hash << 5) + hash) ^ c;
     }
 

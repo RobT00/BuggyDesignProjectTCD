@@ -1,0 +1,37 @@
+#WEEK 3
+
+FUNCTIONALITY ADDED: Simple hashmap for storing command handlers
+BY WHO: Aron
+
+
+#WEEK 4
+
+FUNCTIONALITY ADDED: Communication framework on the PC side
+BY WHO: Rob
+FUNCTIONALITY ADDED: Communication framework on the Arduino side
+BY WHO: Eoin
+FUNCTIONALITY ADDED: Motor control class
+BY WHO: Alexandra
+FUNCTIONALITY ADDED: Initial buggy data structure and simple commands
+BY WHO: Aron
+
+FUNCTIONALITY CHANGED: Arduino HashMap now supports both Strings and const char*s
+BY WHO: Aron
+
+
+#WEEK 5
+FUNCTIONALITY ADDED: Gantry detection
+BY WHO: Eoin and Alexandra
+FUNCTIONALITY ADDED: Handling gantries on the C# side
+BY WHO: Rob
+FUNCTIONALITY ADDED: Arduino Buggy coordination class
+BY WHO: Aron
+
+
+#WEEK 6
+FUNCTIONALITY ADDED: Ultrasonic obstacle detection
+BY WHO: Eoin, Alexandra, Aron
+FUNCTIONALITY ADDED: Parking
+BY WHO: Eoin, Rob, Alexandra, Aron
+FUNCTIONALITY ADDED: Full Wizzard of Oz control
+BY WHO: Rob, Eoin, Alexandra, Aron
