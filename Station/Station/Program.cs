@@ -1,5 +1,4 @@
-﻿using ConsoleApplication;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,8 +8,11 @@ namespace Station
 {
     class Program
     {
+        public static int LAPS = 0;
         static void Main(string[] args)
         {
+            Console.WriteLine("How many laps would you like to do? ");
+            Int32.TryParse(Console.ReadLine(), out LAPS);
             Station station = new Station();
             while (true)
             {

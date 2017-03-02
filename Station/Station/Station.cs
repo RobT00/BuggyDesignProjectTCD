@@ -1,5 +1,4 @@
-﻿using ConsoleApplication;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,7 +30,7 @@ namespace Station
         }
         public Buggy getBuggyForID(int ID)
         {
-            if (ID == 1)
+            if (ID == 1 || ID == 2)
             {
                 return buggy;
             }
@@ -41,6 +40,14 @@ namespace Station
         public void defaultCommandHandler(int ID, string command)
         {
             Program.print("Invalid message recieved from buggy " + ID + ": " + command);
+        }
+        public static void buggySwitch(int ID, Communications comm)
+        {
+            if (ID == 1)
+                ID = 2;
+            else
+                ID = 1;
+            comm.send(ID, "GO");
         }
     }
 }
