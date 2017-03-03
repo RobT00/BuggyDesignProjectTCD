@@ -7,9 +7,7 @@ void UltraSonic::ultraLoop() {
   if (currentMillis - lastPingTime >= pingInterval) {
     lastPingTime = currentMillis;
     unsigned long distance = measureDistance();
-    // Serial.print("Value: ");
-    // Serial.println(value);
-    if (obstacle == false && distance < tresholdDistance) {
+    if (obstacle == false && distance < tresholdDistance && buggy->isGoing()) {
       buggy->stop(true);
       comms->writeXbee("OBSTACLE");
       obstacle = true;

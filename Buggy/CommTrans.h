@@ -7,7 +7,8 @@
 
 class CommTrans {
  public:
-    CommTrans() {}
+    CommTrans() = delete;
+    CommTrans(short ID) : my_ID(ID) {}
     void init() const;
     void writeXbee(String command) const;
     void processCommand(char c);
@@ -18,5 +19,5 @@ class CommTrans {
     String message;
     HashMap handlers;
     VoidFunction defaultHandler = NULL;
-    static const short my_ID = 1;
+    const short my_ID;
 };
