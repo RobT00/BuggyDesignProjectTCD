@@ -15,7 +15,7 @@ namespace Station
         private SerialPort port = new SerialPort();
         public Communications()
         {
-            port.PortName = "COM5";
+            port.PortName = "COM8";
             port.BaudRate = 9600;
             port.Open();
 

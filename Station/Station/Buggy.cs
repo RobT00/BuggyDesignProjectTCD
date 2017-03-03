@@ -32,10 +32,10 @@ namespace Station
         }
         public void go()
         {
-            if (laps == requiredLaps)
-                return;
-            else
-                comms.send(ID, "GO");
+            //if (laps == requiredLaps)
+            //    return;
+            //else
+            comms.send(ID, "GO");
         }
         public void stop()
         {
@@ -95,7 +95,7 @@ namespace Station
                 Program.print("Buggy " + ID + " is in the park lane");
             }
             else
-                Program.print("Buggy " + ID + " parked! " + laps + " lap(s) completed!");
+                Program.print("Buggy " + ID + " parked! " + (laps - 1) + " lap(s) completed!");
             //Environment.Exit(0); This exits the program
         }
         private void sendDirection()
