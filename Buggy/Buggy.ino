@@ -9,7 +9,7 @@ UltraSonic *sonic;
 void setup() {
   comm = new CommTrans(1);
   comm->init();
-  buggy = new Buggy(comm);
+  buggy = new Buggy(comm, CLOCKWISE);
   comm->setDefaultHandler( [] { comm->writeXbee("INVALID"); });
   comm->addHandler("PING", [] { comm->writeXbee("PONG"); });
   comm->addHandler("PONG", [] { comm->writeXbee("PING"); });
