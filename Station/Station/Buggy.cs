@@ -14,18 +14,28 @@ namespace Station
         private Communications comms;
         private int last_gantry = 0;
         private int laps = 0;
+        private Station station;
+        private int requiredLaps = 0;
 
-        public Buggy(int ID, Direction direction, Communications comms)
+        public Buggy(int ID, Direction direction, Station station, Communications comms)
         {
             this.ID = ID;
             this.direction = direction;
             this.comms = comms;
+            this.station = station;
 
             sendDirection();
         }
+        public void setRequiredLaps(int laps)
+        {
+            requiredLaps = laps;
+        }
         public void go()
         {
-            comms.send(ID, "GO");
+            if (laps == requiredLaps)
+                return;
+            else
+                comms.send(ID, "GO");
         }
         public void stop()
         {
@@ -53,12 +63,12 @@ namespace Station
             trackState("Gantry", gantry_num);
             if (direction == Direction.Clockwise)
             {
-                if (laps - 1 == Program.LAPS) //Based on our system, clockwise will be counted as doing one extra lap
+                if (laps == requiredLaps) //Based on our system, clockwise will be counted as doing one extra lap
                     goPark();
                 else if (last_gantry == 3)
                 {
                     stop();
-                    Station.buggySwitch(ID, comms);
+                    station.buggySwitch(ID);
                 }
             }
             else if (direction == Direction.AntiClockwise)
@@ -66,7 +76,6 @@ namespace Station
                 if (gantry_num == 1)
                 {
                     goPark();
-                    Station.buggySwitch(ID, comms);
                 }
             }
             //For Bronze
@@ -79,8 +88,12 @@ namespace Station
         }
         public void buggyParked()
         {
-            if (direction == Direction.AntiClockwise && laps < Program.LAPS)
+            if (direction == Direction.AntiClockwise)
+            {
+                station.buggySwitch(ID);
+                //if (laps < requiredLaps)
                 Program.print("Buggy " + ID + " is in the park lane");
+            }
             else
                 Program.print("Buggy " + ID + " parked! " + laps + " lap(s) completed!");
             //Environment.Exit(0); This exits the program
@@ -135,7 +148,7 @@ namespace Station
             }
             if (call == "Gantry") {
                 Console.Write((" stopped at gantry " + last_gantry + " Entering track section: "));
-                if (laps == Program.LAPS || (direction == Direction.AntiClockwise && last_gantry == 1)) {
+                if (laps == requiredLaps || (direction == Direction.AntiClockwise && last_gantry == 1)) {
                     Console.WriteLine(("Park Lane"));
                     return;
                 }

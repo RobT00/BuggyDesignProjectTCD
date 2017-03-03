@@ -8,12 +8,13 @@ namespace Station
 {
     class Program
     {
-        public static int LAPS = 0;
         static void Main(string[] args)
         {
+            int laps = 0;
             Console.WriteLine("How many laps would you like to do? ");
-            Int32.TryParse(Console.ReadLine(), out LAPS);
+            Int32.TryParse(Console.ReadLine(), out laps);
             Station station = new Station();
+            station.setNumberOfLabs(laps);
             while (true)
             {
                 Console.Write("> ");

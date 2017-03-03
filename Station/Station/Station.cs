@@ -8,13 +8,15 @@ namespace Station
 {
     class Station
     {
-        private Buggy buggy;
+        private Buggy buggy1;
+        private Buggy buggy2;
         private Communications comms;
 
         public Station()
         {
             comms = new Communications();
-            buggy = new Buggy(1, Direction.Clockwise, comms);
+            buggy1 = new Buggy(1, Direction.Clockwise, this ,comms);
+            buggy2 = new Buggy(2, Direction.AntiClockwise, this, comms);
 
             comms.setDefaultHandler(defaultCommandHandler);
             comms.addCommand("PING", (int ID) => getBuggyForID(ID)?.pingRecieved());
@@ -30,10 +32,12 @@ namespace Station
         }
         public Buggy getBuggyForID(int ID)
         {
-            if (ID == 1 || ID == 2)
+            if (ID == 1)
             {
-                return buggy;
+                return buggy1;
             }
+            if (ID == 2)
+                return buggy2;
             return null;
         }
 
@@ -41,13 +45,17 @@ namespace Station
         {
             Program.print("Invalid message recieved from buggy " + ID + ": " + command);
         }
-        public static void buggySwitch(int ID, Communications comm)
+        public void buggySwitch(int ID)
         {
             if (ID == 1)
-                ID = 2;
+                getBuggyForID(2)?.go();
             else
-                ID = 1;
-            comm.send(ID, "GO");
+                getBuggyForID(1)?.go();
+        }
+        public void setNumberOfLabs(int laps)
+        {
+            buggy1.setRequiredLaps(laps + 1);
+            buggy2.setRequiredLaps(laps);
         }
     }
 }
