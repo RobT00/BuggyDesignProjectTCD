@@ -36,8 +36,8 @@ namespace Station
         {
             SerialPort test = (SerialPort)sender;
             String message = test.ReadLine();
-            Console.Write("Buggy> ");
-            Console.WriteLine(message);
+            //Console.Write("Buggy> ");
+            //Console.WriteLine(message);
             if (message.Length < 5)
                 return;
             int sender_id = message[0] - '0';
@@ -50,7 +50,10 @@ namespace Station
             if (!buggyhash.ContainsKey(command))
                 defaultHandler?.Invoke(sender_id, command);
             else
+            {
+                Console.WriteLine("> Buggy" + sender_id + ": " + command);
                 buggyhash[command](sender_id);
+            }
         }
         public void addCommand(string command, Action<int> handler)
         {

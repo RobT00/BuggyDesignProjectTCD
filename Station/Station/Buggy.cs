@@ -61,21 +61,29 @@ namespace Station
             
             go();
             trackState("Gantry", gantry_num);
-            if (direction == Direction.Clockwise)
+            if (station.getNumberOfBuggies() < 2)
             {
-                if (laps == requiredLaps) //Based on our system, clockwise will be counted as doing one extra lap
+                if (laps == requiredLaps)
                     goPark();
-                else if (last_gantry == 3)
-                {
-                    stop();
-                    station.buggySwitch(ID);
-                }
             }
-            else if (direction == Direction.AntiClockwise)
+            else
             {
-                if (gantry_num == 1)
+                if (direction == Direction.Clockwise)
                 {
-                    goPark();
+                    if (laps == requiredLaps) //Based on our system, clockwise will be counted as doing one extra lap
+                        goPark();
+                    else if (last_gantry == 3)
+                    {
+                        stop();
+                        station.buggySwitch(ID);
+                    }
+                }
+                else if (direction == Direction.AntiClockwise)
+                {
+                    if (gantry_num == 1)
+                    {
+                        goPark();
+                    }
                 }
             }
             //For Bronze
@@ -120,21 +128,15 @@ namespace Station
         }
         public void going()
         {
-            //int x = last_gantry;
-            //if (last_gantry == 0)
-            //    x = earlyAction();
-            //trackState("Go", x);
+
         }
         public void stopped()
         {
-            //int x = last_gantry;
-            //if (last_gantry == 0)
-            //    x = earlyAction();
-            //trackState("Stop", x);
+
         }
         private void buggyAction()
         {
-            Console.Write("Buggy number: " + ID);
+            Console.Write("> Buggy " + ID + ": ");
         }
         private void trackState(string call, int num)
         {

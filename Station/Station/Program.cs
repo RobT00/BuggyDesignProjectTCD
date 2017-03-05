@@ -8,12 +8,19 @@ namespace Station
 {
     class Program
     {
+        public static int buggies = 3;
         static void Main(string[] args)
         {
             int laps = 0;
+            Station station = new Station();
+            while (buggies > 2 && buggies <= 0)
+            {
+                Console.WriteLine("How many buggies are you using? ");
+                Int32.TryParse(Console.ReadLine(), out buggies);
+            }
+            station.setNumberOfBuggies(buggies);
             Console.WriteLine("How many laps would you like to do? ");
             Int32.TryParse(Console.ReadLine(), out laps);
-            Station station = new Station();
             station.setNumberOfLabs(laps);
             while (true)
             {

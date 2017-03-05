@@ -11,6 +11,7 @@ namespace Station
         private Buggy buggy1;
         private Buggy buggy2;
         private Communications comms;
+        private int number_of_buggies = 0;
 
         public Station()
         {
@@ -49,13 +50,28 @@ namespace Station
         {
             if (ID == 1)
                 getBuggyForID(2)?.go();
-            else
+            else if (ID == 2)
                 getBuggyForID(1)?.go();
+            else
+                Console.WriteLine("Something goofed...");
         }
         public void setNumberOfLabs(int laps)
         {
-            buggy1.setRequiredLaps(laps + 1);
-            buggy2.setRequiredLaps(laps);
+            if (getNumberOfBuggies() == 1)
+                buggy1.setRequiredLaps(laps);
+            else
+            {
+                buggy1.setRequiredLaps(laps + 1);
+                buggy2.setRequiredLaps(laps);
+            }
+        }
+        public void setNumberOfBuggies(int buggies)
+        {
+            number_of_buggies = buggies;
+        }
+        public int getNumberOfBuggies()
+        {
+            return number_of_buggies;
         }
     }
 }
