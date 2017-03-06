@@ -12,20 +12,23 @@ namespace Station
         static void Main(string[] args)
         {
             int laps = 0;
-            Station station = new Station();
-            while (buggies > 2 && buggies <= 0)
+            while (buggies > 2 || buggies <= 0)
             {
                 Console.WriteLine("How many buggies are you using? ");
                 Int32.TryParse(Console.ReadLine(), out buggies);
             }
-            station.setNumberOfBuggies(buggies);
             Console.WriteLine("How many laps would you like to do? ");
             Int32.TryParse(Console.ReadLine(), out laps);
+            Console.WriteLine("Initialising...");
+            Station station = new Station();
+            station.setNumberOfBuggies(buggies);
             station.setNumberOfLabs(laps);
             while (true)
             {
                 Console.Write("> ");
                 string input = Console.ReadLine();
+                if (input == "EXIT")
+                    Environment.Exit(0);
                 if (input.Length < 3)
                 {
                     Console.WriteLine("Station: Message too short");

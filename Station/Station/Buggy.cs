@@ -103,7 +103,12 @@ namespace Station
                 Program.print("Buggy " + ID + " is in the park lane");
             }
             else
-                Program.print("Buggy " + ID + " parked! " + (laps - 1) + " lap(s) completed!");
+            {
+                if (station.getNumberOfBuggies() == 1)
+                    Program.print("Buggy " + ID + " parked! " + (laps) + " lap(s) completed!");
+                else
+                    Program.print("Buggy " + ID + " parked! " + (laps - 1) + " lap(s) completed!");
+            }
             //Environment.Exit(0); This exits the program
         }
         private void sendDirection()
