@@ -9,14 +9,16 @@ UltraSonic *sonic;
 void setup() {
   comm = new CommTrans(1);
   comm->init();
-  buggy = new Buggy(comm, CLOCKWISE);
-  comm->setDefaultHandler( [] { comm->writeXbee("INVALID"); });
-  comm->addHandler("PING", [] { comm->writeXbee("PONG"); });
-  comm->addHandler("PONG", [] { comm->writeXbee("PING"); });
-  comm->addHandler("LED",  [] { buggy->flashLED(); });
-  comm->addHandler("GO",   [] { buggy->go(); });
-  comm->addHandler("STOP", [] { buggy->stop(); });
-  comm->addHandler("PARK", [] { buggy->park(); });
+  buggy = new Buggy(comm);
+  comm->setDefaultHandler(   [] { comm->writeXbee("INVALID"); });
+  comm->addHandler("PING",   [] { comm->writeXbee("PONG"); });
+  comm->addHandler("PONG",   [] { comm->writeXbee("PING"); });
+  comm->addHandler("LED",    [] { buggy->flashLED(); });
+  comm->addHandler("GO",     [] { buggy->go(); });
+  comm->addHandler("STOP",   [] { buggy->stop(); });
+  comm->addHandler("PARK",   [] { buggy->park(); });
+  comm->addHandler("CLOCK",  [] { buggy->setDirection(CLOCKWISE); });
+  comm->addHandler("ACLOCK", [] { buggy->setDirection(ANTI_CLOCKWISE); });
 
   attachInterrupt(digitalPinToInterrupt(Buggy::IR_PIN), IR_ISR, RISING);
 
