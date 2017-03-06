@@ -1,5 +1,4 @@
-﻿using ConsoleApplication;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,13 +8,16 @@ namespace Station
 {
     class Station
     {
-        private Buggy buggy;
+        private Buggy buggy1;
+        private Buggy buggy2;
         private Communications comms;
+        private int number_of_buggies = 0;
 
         public Station()
         {
             comms = new Communications();
-            buggy = new Buggy(1, Direction.Clockwise, comms);
+            buggy1 = new Buggy(1, Direction.Clockwise, this ,comms);
+            buggy2 = new Buggy(2, Direction.AntiClockwise, this, comms);
 
             comms.setDefaultHandler(defaultCommandHandler);
             comms.addCommand("PING", (int ID) => getBuggyForID(ID)?.pingRecieved());
@@ -33,14 +35,43 @@ namespace Station
         {
             if (ID == 1)
             {
-                return buggy;
+                return buggy1;
             }
+            if (ID == 2)
+                return buggy2;
             return null;
         }
 
         public void defaultCommandHandler(int ID, string command)
         {
             Program.print("Invalid message recieved from buggy " + ID + ": " + command);
+        }
+        public void buggySwitch(int ID)
+        {
+            if (ID == 1)
+                getBuggyForID(2)?.go();
+            else if (ID == 2)
+                getBuggyForID(1)?.go();
+            else
+                Console.WriteLine("Something goofed...");
+        }
+        public void setNumberOfLabs(int laps)
+        {
+            if (getNumberOfBuggies() == 1)
+                buggy1.setRequiredLaps(laps);
+            else
+            {
+                buggy1.setRequiredLaps(laps + 1);
+                buggy2.setRequiredLaps(laps);
+            }
+        }
+        public void setNumberOfBuggies(int buggies)
+        {
+            number_of_buggies = buggies;
+        }
+        public int getNumberOfBuggies()
+        {
+            return number_of_buggies;
         }
     }
 }
