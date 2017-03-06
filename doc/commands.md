@@ -1,10 +1,10 @@
 # Command specifications
 
-Each message consists if a sender ID, a reciever ID, and a command, separated by
-a space (` `). They are terminated by a newline (`\n`).
+Each message consists of a sender ID, a receiver ID, and a command, separated by
+a single space (` `). Messages are terminated by a newline (`\n`).
 
-IDs can be 0, 1, or 2, with 0 representing the station, and the other two the
-buggies
+Valid IDs are `0`, `1` and `2`, where `0` represents the station and the other
+two the buggies.
 
 ### Commands sent by the buggy to the station:
 
@@ -12,7 +12,7 @@ Command | Explanation
 --- | ---
 PONG | Response to PING
 PING | Response to PONG
-GOING | Buggy is is going after recieveing a GO command
+GOING | Buggy is going after receiveing a GO command
 STOPPED | Buggy stopped after receiving a STOP command
 GANTRY1 | Passing under Gantry 1
 GANTRY2 | Passing under Gantry 2
@@ -30,8 +30,8 @@ Command | Explanation
 PING | For communications testing, expecting PONG
 PONG | For communications testing, expecting PING
 LED | Requests buggy to flash its LED for identification purposes
-CLOCK | Informs buggy that it will go clockwise around the track (will be relevant for levels silver and gold)
-ACLOCK | Informs buggy that it will go anti-clockwise around the track (will be relevant for levels silver and gold)
-GO | Commands buggy to go, following line
+CLOCK | Informs buggy that it will go clockwise around the track
+ACLOCK | Informs buggy that it will go anti-clockwise around the track
+GO | Commands buggy to go, following the line
 STOP | Commands buggy to stop immediately
-PARK | Commands buggy to turn if it encounters an intersection. Overridden side depends on the orientation sent earlier (clockwise vs anti-clockwise)
+PARK | Commands buggy to turn in the appropriate direction for the parking lane, then stop after parking

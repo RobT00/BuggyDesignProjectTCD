@@ -1,4 +1,5 @@
 #include "CommTrans.h"
+
 #include "Arduino.h"
 
 void CommTrans::writeXbee(String command) const {
@@ -46,7 +47,7 @@ void CommTrans::init() const {
   Serial.begin(9600);
   Serial.print("+++");
   delay(1500);
-  Serial.println("ATID 6968, CH C, CN");
+  Serial.println("ATID 3308, CH C, CN");
   delay(11000);
   while (Serial.read() != -1) {}
 }

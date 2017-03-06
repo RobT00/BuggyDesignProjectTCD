@@ -1,7 +1,7 @@
 #include "Buggy.h"
 
 void Buggy::go(bool silent) {
-  if (isGoing) {
+  if (going) {
     return;
   }
   motor.go();
@@ -9,11 +9,11 @@ void Buggy::go(bool silent) {
   if (!silent) {
     comms->writeXbee("GOING");
   }
-  isGoing = true;
+  going = true;
 }
 
 void Buggy::stop(bool silent) {
-  if (!isGoing) {
+  if (!going) {
     return;
   }
   motor.stop();
@@ -21,11 +21,15 @@ void Buggy::stop(bool silent) {
   if (!silent) {
     comms->writeXbee("STOPPED");
   }
-  isGoing = false;
+  going = false;
+}
+
+bool Buggy::isGoing() const {
+  return going;
 }
 
 unsigned long Buggy::getTravelledTime() const {
-  if (isGoing) {
+  if (going) {
     return travelledTime + (millis() - lastGoTime);
   } else {
     return travelledTime;
@@ -73,6 +77,7 @@ int Buggy::readGantry() const {
   }
   int pulse = sum / 4;
 
+  comms->writeXbee(String("IRLength: ") + pulse);
   if (pulse >= 500 && pulse <= 1500) {
     return 1;
   } else if (pulse >= 1500 && pulse <= 2500) {
@@ -94,7 +99,7 @@ void Buggy::update() {
 }
 
 void Buggy::updateParking() {
-  if (!isGoing) {
+  if (!going) {
     return; // Do not interfere with other go-stop functionalities
   }
 
