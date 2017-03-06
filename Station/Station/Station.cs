@@ -16,8 +16,6 @@ namespace Station
         public Station()
         {
             comms = new Communications();
-            buggy1 = new Buggy(1, Direction.Clockwise, this ,comms);
-            buggy2 = new Buggy(2, Direction.AntiClockwise, this, comms);
 
             comms.setDefaultHandler(defaultCommandHandler);
             comms.addCommand("PING", (int ID) => getBuggyForID(ID)?.pingRecieved());
@@ -30,6 +28,7 @@ namespace Station
             comms.addCommand("PARKED", (int ID) => getBuggyForID(ID)?.buggyParked());
             comms.addCommand("OBSTACLE", (int ID) => getBuggyForID(ID)?.stopped()); //may make new function to state the obstacle caused stop
             comms.addCommand("PATHCLEAR", (int ID) => getBuggyForID(ID)?.going()); //same as above
+            setUp();
         }
         public Buggy getBuggyForID(int ID)
         {
@@ -72,6 +71,25 @@ namespace Station
         public int getNumberOfBuggies()
         {
             return number_of_buggies;
+        }
+        public void setUp()
+        {
+            int buggies = 3;
+            int laps = 0;
+            while (buggies > 2 || buggies <= 0)
+            {
+                Console.WriteLine("How many buggies are you using? ");
+                Int32.TryParse(Console.ReadLine(), out buggies);
+            }
+            Console.WriteLine("How many laps would you like to do? ");
+            Int32.TryParse(Console.ReadLine(), out laps);
+            buggy1 = new Buggy(1, Direction.Clockwise, this, comms);
+            if (buggies == 2)
+                buggy2 = new Buggy(2, Direction.AntiClockwise, this, comms);
+            else
+                buggy2 = null;
+            setNumberOfBuggies(buggies);
+            setNumberOfLabs(laps);
         }
     }
 }

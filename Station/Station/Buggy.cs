@@ -55,22 +55,26 @@ namespace Station
             //buggyAction();
             //Program.print(" stopped at Gantry: " + gantry_num);
             Thread.Sleep(1000);
-            last_gantry = gantry_num;
+
             if (((direction == Direction.Clockwise) && (gantry_num == 2)) || ((direction == Direction.AntiClockwise) && (gantry_num == 1)))
                 laps++;
-            
+            else if (((direction == Direction.Clockwise) && (last_gantry == 1) && (gantry_num != 2)) 
+                || ((direction == Direction.AntiClockwise) && (last_gantry == 2) && (gantry_num != 1))) {
+                laps++;
+            }
             go();
+            last_gantry = gantry_num;
             trackState("Gantry", gantry_num);
             if (station.getNumberOfBuggies() < 2)
             {
-                if (laps == requiredLaps)
+                if (laps >= requiredLaps && gantry_num == 2)
                     goPark();
             }
             else
             {
                 if (direction == Direction.Clockwise)
                 {
-                    if (laps == requiredLaps) //Based on our system, clockwise will be counted as doing one extra lap
+                    if (laps >= requiredLaps && gantry_num == 2) //Based on our system, clockwise will be counted as doing one extra lap
                         goPark();
                     else if (last_gantry == 3)
                     {
@@ -99,7 +103,6 @@ namespace Station
             if (direction == Direction.AntiClockwise)
             {
                 station.buggySwitch(ID);
-                //if (laps < requiredLaps)
                 Program.print("Buggy " + ID + " is in the park lane");
             }
             else
@@ -109,7 +112,6 @@ namespace Station
                 else
                     Program.print("Buggy " + ID + " parked! " + (laps - 1) + " lap(s) completed!");
             }
-            //Environment.Exit(0); This exits the program
         }
         private void sendDirection()
         {
@@ -154,8 +156,10 @@ namespace Station
                     num--;
             }
             if (call == "Gantry") {
+                onLap();
                 Console.Write((" stopped at gantry " + last_gantry + " Entering track section: "));
-                if (laps == requiredLaps || (direction == Direction.AntiClockwise && last_gantry == 1)) {
+                if ((laps >= requiredLaps && last_gantry == 2) 
+                    || (direction == Direction.AntiClockwise && last_gantry == 1)) {
                     Console.WriteLine(("Park Lane"));
                     return;
                 }
@@ -170,6 +174,11 @@ namespace Station
                 Console.WriteLine((" is on the move in section " + num));
             }
          }
+        private void onLap()
+        {
+            buggyAction();
+            Console.WriteLine("is on lap " + laps);
+        }
         private int earlyAction()
         {
             int a;
