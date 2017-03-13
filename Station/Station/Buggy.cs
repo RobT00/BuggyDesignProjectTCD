@@ -149,7 +149,10 @@ namespace Station
             }
             if (call == "Gantry") {
                 onLap();
-                Console.Write((" stopped at gantry " + last_gantry + " Entering track section: "));
+                if (num == -10)
+                    Console.Write(" gantry interpreted as invalid");
+                else
+                    Console.Write((" stopped at gantry " + last_gantry + " Entering track section: "));
                 if ((laps >= requiredLaps && last_gantry == 2) 
                     || (direction == Direction.AntiClockwise && last_gantry == 1)) {
                     Console.WriteLine(("Park Lane"));

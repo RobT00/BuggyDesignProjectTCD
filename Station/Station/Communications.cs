@@ -13,6 +13,7 @@ namespace Station
         private Dictionary<string, Action<int>> buggyhash = new Dictionary<string, Action<int>>();
         private Action<int, string> defaultHandler = null;
         private SerialPort port = new SerialPort();
+        private bool recieved = false;
         public Communications()
         {
             port.PortName = "COM4";
@@ -29,8 +30,18 @@ namespace Station
         }
         public void send(int buggy_id, string command)
         {
+            int reps = 0;
             int sender_id = 0;
-            port.Write(sender_id + " " + buggy_id + " " + command + "\n");
+            recieved = false;
+            while (!recieved && reps < 10)
+            {
+                port.Write(sender_id + " " + buggy_id + " " + command + "\n");
+                //Thread.Sleep(100);
+                Task.Delay(100);
+                reps++;
+            }
+            if (reps == 10)
+                Console.WriteLine("Command: " + command + "\nNot being recieved by buggy: " + buggy_id);
         }
         public void recievedData(object sender, SerialDataReceivedEventArgs e)
         {
@@ -45,6 +56,7 @@ namespace Station
                 return;
             if (sender_id != 1 && sender_id != 2)
                 return;
+            recieved = true;
             if (!buggyhash.ContainsKey(command))
                 defaultHandler?.Invoke(sender_id, command);
             else
