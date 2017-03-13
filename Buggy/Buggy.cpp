@@ -60,9 +60,6 @@ void Buggy::detectGantry() {
     } else {
       comms->writeXbee("GANTRY" + String(gantry));
       atGantryAt = getTravelledTime();
-      // stop()
-      // delay(1000);
-      // go();
       underGantry = true;
       irInterrupt = false;
     }
@@ -71,11 +68,12 @@ void Buggy::detectGantry() {
 
 int Buggy::readGantry() const {
   while (digitalRead(IR_PIN) == HIGH) {}
+  short count = 2;
   int sum = 0;
-  for (short i = 0; i < 4; i++) {
+  for (short i = 0; i < count; i++) {
     sum += pulseIn(IR_PIN, HIGH);
   }
-  int pulse = sum / 4;
+  int pulse = sum / count;
 
   comms->writeXbee(String("IRLength: ") + pulse);
   if (pulse >= 500 && pulse <= 1500) {
