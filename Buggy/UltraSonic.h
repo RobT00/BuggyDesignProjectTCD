@@ -13,8 +13,9 @@ class UltraSonic {
   const unsigned short groundPin = 16;
   const unsigned short powerPin = 17;
   const unsigned short ultraPin = 18;
-  const unsigned long tresholdDistance = 12; // cm
-  const unsigned long pingInterval = 250; // ms
+  const unsigned long tresholdDistance = 16; // cm
+  const unsigned long pingInterval = 400; // ms
+  const unsigned long maxPulseLength = 40000; // ms
   unsigned long lastPingTime = 0;
 
   bool obstacle = false;
