@@ -32,9 +32,6 @@ namespace Station
         }
         public void go()
         {
-            //if (laps == requiredLaps)
-            //    return;
-            //else
             comms.send(ID, "GO");
         }
         public void stop()
@@ -52,8 +49,6 @@ namespace Station
         public void onGantry(int gantry_num)
         {
             stop();
-            //buggyAction();
-            //Program.print(" stopped at Gantry: " + gantry_num);
             Thread.Sleep(1000);
 
             if (((direction == Direction.Clockwise) && (gantry_num == 2)) || ((direction == Direction.AntiClockwise) && (gantry_num == 1)))
@@ -90,9 +85,6 @@ namespace Station
                     }
                 }
             }
-            //For Bronze
-            //if (laps == 2)
-            //    goPark();
         }
         public void goPark()
         {
