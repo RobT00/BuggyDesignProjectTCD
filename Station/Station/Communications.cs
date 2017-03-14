@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO.Ports;
 using System.Threading;
 
-namespace ConsoleApplication
+namespace Station
 {
     class Communications
     {
@@ -15,13 +15,13 @@ namespace ConsoleApplication
         private SerialPort port = new SerialPort();
         public Communications()
         {
-            port.PortName = "COM6";
+            port.PortName = "COM4";
             port.BaudRate = 9600;
             port.Open();
 
             port.Write("+++");
             Thread.Sleep(1100);
-            port.WriteLine("ATID 6968, CH C, CN");
+            port.WriteLine("ATID 3308, CH C, CN");
             Thread.Sleep(10000);
 
             port.DiscardInBuffer();
@@ -36,8 +36,6 @@ namespace ConsoleApplication
         {
             SerialPort test = (SerialPort)sender;
             String message = test.ReadLine();
-            Console.Write("Buggy> ");
-            Console.WriteLine(message);
             if (message.Length < 5)
                 return;
             int sender_id = message[0] - '0';
@@ -50,7 +48,10 @@ namespace ConsoleApplication
             if (!buggyhash.ContainsKey(command))
                 defaultHandler?.Invoke(sender_id, command);
             else
+            {
+                Console.WriteLine("> Buggy" + sender_id + ": " + command);
                 buggyhash[command](sender_id);
+            }
         }
         public void addCommand(string command, Action<int> handler)
         {

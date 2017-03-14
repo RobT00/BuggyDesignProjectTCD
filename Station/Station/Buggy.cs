@@ -1,5 +1,4 @@
-﻿using ConsoleApplication;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,14 +14,21 @@ namespace Station
         private Communications comms;
         private int last_gantry = 0;
         private int laps = 0;
+        private Station station;
+        private int requiredLaps = 0;
 
-        public Buggy(int ID, Direction direction, Communications comms)
+        public Buggy(int ID, Direction direction, Station station, Communications comms)
         {
             this.ID = ID;
             this.direction = direction;
             this.comms = comms;
+            this.station = station;
 
             sendDirection();
+        }
+        public void setRequiredLaps(int laps)
+        {
+            requiredLaps = laps;
         }
         public void go()
         {
@@ -43,43 +49,61 @@ namespace Station
         public void onGantry(int gantry_num)
         {
             stop();
-            //buggyAction();
-            //Program.print(" stopped at Gantry: " + gantry_num);
             Thread.Sleep(1000);
-            last_gantry = gantry_num;
+
             if (((direction == Direction.Clockwise) && (gantry_num == 2)) || ((direction == Direction.AntiClockwise) && (gantry_num == 1)))
-                laps++; //Wizard of OZ Demo requires travelling in clockwise direction
-            
+                laps++;
+            else if (((direction == Direction.Clockwise) && (last_gantry == 1) && (gantry_num != 2)) 
+                || ((direction == Direction.AntiClockwise) && (last_gantry == 2) && (gantry_num != 1))) {
+                laps++;
+            }
             go();
+            last_gantry = gantry_num;
             trackState("Gantry", gantry_num);
-            if (laps == 2) //Wizard of OZ Demo requires to park after 2 laps
-                goPark();
+            if (station.getNumberOfBuggies() < 2)
+            {
+                if (laps >= requiredLaps && gantry_num == 2)
+                    goPark();
+            }
+            else
+            {
+                if (direction == Direction.Clockwise)
+                {
+                    if (laps >= requiredLaps && gantry_num == 2) //Based on our system, clockwise will be counted as doing one extra lap
+                        goPark();
+                    else if (last_gantry == 3)
+                    {
+                        stop();
+                        station.buggySwitch(ID);
+                    }
+                }
+                else if (direction == Direction.AntiClockwise)
+                {
+                    if (gantry_num == 1)
+                    {
+                        goPark();
+                    }
+                }
+            }
         }
         public void goPark()
         {
-            //    if (direction == Direction.Clockwise)
-            //        comms.send(ID, "PARKRIGHT"); //Left override will need to be triggered
-            //    else
-            //        comms.send(ID, "PARKLEFT"); //Trigger right override
             comms.send(ID, "PARK");    
-            //Alternatively could send "RIGHT"/"LEFT"?
-            //Perhaps there should be a delay here?
-            //comms.send(ID, "STOP");
-            
-            /*
-            We could also let the buggy Park/Stop itself, when goPark is triggered, the byggy will turn/override in the desired
-            direction when both eyes see black (override should stop when an eye sees white again, it has turned)
-            At the next instance of both eyes seeing black, stop the buggy, the buggy is now parked
-             */
-            //Wait for message from buggy that it has parked
-            //}
-            //else
-                //Program.print("Invalid Command! Not safe to park!");
         }
         public void buggyParked()
         {
-            Program.print("Buggy " + ID + " parked! " + laps + " lap(s) completed!");
-            //Environment.Exit(0); This exits the program
+            if (direction == Direction.AntiClockwise)
+            {
+                station.buggySwitch(ID);
+                Program.print("Buggy " + ID + " is in the park lane");
+            }
+            else
+            {
+                if (station.getNumberOfBuggies() == 1)
+                    Program.print("Buggy " + ID + " parked! " + (laps) + " lap(s) completed!");
+                else
+                    Program.print("Buggy " + ID + " parked! " + (laps - 1) + " lap(s) completed!");
+            }
         }
         private void sendDirection()
         {
@@ -103,25 +127,18 @@ namespace Station
         }
         public void going()
         {
-            //int x = last_gantry;
-            //if (last_gantry == 0)
-            //    x = earlyAction();
-            //trackState("Go", x);
+
         }
         public void stopped()
         {
-            //int x = last_gantry;
-            //if (last_gantry == 0)
-            //    x = earlyAction();
-            //trackState("Stop", x);
+
         }
         private void buggyAction()
         {
-            Console.Write("Buggy number: " + ID);
+            Console.Write("> Buggy " + ID + ": ");
         }
         private void trackState(string call, int num)
         {
-            //Is there a way to tell what function has called this?
             buggyAction();
             if (direction == Direction.AntiClockwise)
             {
@@ -131,8 +148,10 @@ namespace Station
                     num--;
             }
             if (call == "Gantry") {
+                onLap();
                 Console.Write((" stopped at gantry " + last_gantry + " Entering track section: "));
-                if (laps == 2) {
+                if ((laps >= requiredLaps && last_gantry == 2) 
+                    || (direction == Direction.AntiClockwise && last_gantry == 1)) {
                     Console.WriteLine(("Park Lane"));
                     return;
                 }
@@ -146,8 +165,12 @@ namespace Station
             {
                 Console.WriteLine((" is on the move in section " + num));
             }
-            //I will edit this function so that it will be capable of printing out the track state information for both buggis when the time arises
          }
+        private void onLap()
+        {
+            buggyAction();
+            Console.WriteLine("is on lap " + laps);
+        }
         private int earlyAction()
         {
             int a;

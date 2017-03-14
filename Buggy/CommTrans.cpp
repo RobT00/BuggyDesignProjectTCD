@@ -34,6 +34,7 @@ void CommTrans::processCommand(char c) {
   if (reci_ID != my_ID) {
     return;
   }
+  // writeXbee(String("Recieved command: ") + command);
 
   VoidFunction f = handlers.get(command);
   if (f != NULL) {
@@ -47,7 +48,7 @@ void CommTrans::init() const {
   Serial.begin(9600);
   Serial.print("+++");
   delay(1500);
-  Serial.println("ATID 6968, CH C, CN");
+  Serial.println("ATID 3308, CH C, CN");
   delay(11000);
   while (Serial.read() != -1) {}
 }

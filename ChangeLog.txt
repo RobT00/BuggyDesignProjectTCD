@@ -35,3 +35,10 @@ FUNCTIONALITY ADDED: Parking
 BY WHO: Eoin, Rob, Alexandra, Aron
 FUNCTIONALITY ADDED: Full Wizzard of Oz control
 BY WHO: Rob, Eoin, Alexandra, Aron
+
+
+#WEEK 7
+FUNCTIONALITY ADDED: Began work on the Gold challenge
+BY WHO: Rob
+FUNCTIONALITY FIXED: Ultrasonic
+BY WHO: Aron

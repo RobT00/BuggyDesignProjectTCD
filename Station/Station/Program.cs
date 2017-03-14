@@ -1,5 +1,4 @@
-﻿using ConsoleApplication;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,13 +8,19 @@ namespace Station
 {
     class Program
     {
+
         static void Main(string[] args)
         {
+            Console.WriteLine("Initialising...");
             Station station = new Station();
             while (true)
             {
                 Console.Write("> ");
                 string input = Console.ReadLine();
+                if (input == "EXIT")
+                    Environment.Exit(0);
+                if (input == "RESET")
+                    station.setUp();
                 if (input.Length < 3)
                 {
                     Console.WriteLine("Station: Message too short");
@@ -46,15 +51,6 @@ namespace Station
                     case "STOP":
                         station.getBuggyForID(ID)?.stop();
                         break;
-                    //case "GANTRY1":
-                    //    station.getBuggyForID(ID)?.onGantry(1);
-                    //    break;
-                    //case "GANTRY2":
-                    //    station.getBuggyForID(ID)?.onGantry(2);
-                    //    break;
-                    //case "GANTRY3":
-                    //    station.getBuggyForID(ID)?.onGantry(3);
-                    //    break;
                     case "PARK":
                         station.getBuggyForID(ID)?.goPark();
                         break;
