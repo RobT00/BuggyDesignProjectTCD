@@ -42,3 +42,11 @@ FUNCTIONALITY ADDED: Began work on the Gold challenge
 BY WHO: Rob
 FUNCTIONALITY FIXED: Ultrasonic
 BY WHO: Aron
+
+#WEEK 8
+FUNCTIONALITY ADDED: Finished Gold challange
+BY WHO: Rob
+FUNCTIONALITY FIXED: Timings
+BY WHO: Aron
+FUNCTIONALITY FIXED: Communication
+BY WHO: Rob, Aron, Eoin
