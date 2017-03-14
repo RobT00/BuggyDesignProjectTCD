@@ -7,9 +7,7 @@ void UltraSonic::ultraLoop() {
   if (currentMillis - lastPingTime >= pingInterval) {
     lastPingTime = currentMillis;
     unsigned long distance = measureDistance();
-    // Serial.print("Value: ");
-    // Serial.println(value);
-    if (obstacle == false && distance < tresholdDistance) {
+    if (obstacle == false && distance < tresholdDistance && buggy->isGoing()) {
       buggy->stop(true);
       comms->writeXbee("OBSTACLE");
       obstacle = true;
@@ -31,8 +29,10 @@ unsigned long UltraSonic::measureDistance() const {
 
   // Recieve distance data
   pinMode(ultraPin, INPUT);
-  unsigned long pulseLength = 0;
-  pulseLength = pulseIn(ultraPin, HIGH);
+  unsigned long pulseLength = pulseIn(ultraPin, HIGH, maxPulseLength);
+  if (pulseLength == 0) {
+    pulseLength = maxPulseLength;
+  }
 
   // Calculate distance
   double distance = ((pulseLength / 2) * .03432);
