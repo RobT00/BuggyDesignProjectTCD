@@ -115,7 +115,11 @@ namespace Station
         }
         public void addCommand(string command, Action<int> handler)
         {
-            buggyhash.Add(new Regex(command), handler);
+            addCommand(new Regex("^" + command + "$"), (int ID, GroupCollection groups) => handler(ID));
+        }
+        public void addCommand(Regex command, Action<int, GroupCollection> handler)
+        {
+            buggyhash.Add(command, handler);
         }
         public void setDefaultHandler(Action<int, string> handler)
         {
