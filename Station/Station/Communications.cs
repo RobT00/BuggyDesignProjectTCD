@@ -10,12 +10,16 @@ namespace Station
 {
     class Communications
     {
+        private SerialPort port = new SerialPort();
+
         private Dictionary<string, Action<int>> buggyhash = new Dictionary<string, Action<int>>();
         private Action<int, string> defaultHandler = null;
+
+        private object[] sendLocks = { new object(), new object() };
         private object[] receiveLocks = { new object(), new object() };
-        private SerialPort port = new SerialPort();
         private bool[] received = { false, false };
-        private object sendingLock = new object();
+        private object portLock = new object();
+
         public Communications()
         {
             port.PortName = "COM11";
@@ -36,37 +40,39 @@ namespace Station
         {
             int reps = 0;
             int sender_id = 0;
-            lock (receiveLocks[buggy_id])
+            lock (sendLocks[buggy_id])
             {
-                received[buggy_id] = false;
-                while (!received[buggy_id])
+                lock (receiveLocks[buggy_id])
                 {
-                    reps++;
-                    
-                    if (reps == 2 && !received[buggy_id])
+                    received[buggy_id] = false;
+                    while (!received[buggy_id])
                     {
-                        if (offlineHandler != null)
+                        reps++;
+
+                        if (reps == 2 && !received[buggy_id])
                         {
-                            offlineHandler();
-                        } else
-                        {
-                            Console.WriteLine("Command: " + command + "\nnot being recieved by buggy: " + buggy_id +
-                            "\nWill keep sending command");
+                            if (offlineHandler != null)
+                            {
+                                offlineHandler();
+                            } else
+                            {
+                                Console.WriteLine("Command: " + command + "\nnot being recieved by buggy: " + buggy_id +
+                                "\nWill keep sending command");
+                            }
                         }
-                        
+                        lock (portLock)
+                        {
+                            port.Write(sender_id + " " + buggy_id + " " + command + "\n");
+                        }
+                        Monitor.Wait(receiveLocks[buggy_id], 100);
                     }
-                    lock (sendingLock)
-                    {
-                        port.Write(sender_id + " " + buggy_id + " " + command + "\n");
-                    }
-                    Monitor.Wait(receiveLocks[buggy_id], 100);
                 }
             }
             if (reps > 1)
             {
                 if (offlineHandler == null)
                 {
-                    Console.WriteLine(" Command: " + command + " received after " + reps + " attempts"); 
+                    Console.WriteLine(" Command: " + command + " received after " + reps + " attempts");
                 }
                 return false;
             }
@@ -89,6 +95,7 @@ namespace Station
             lock (receiveLocks[sender_id])
             {
                 received[sender_id] = true;
+                Monitor.Pulse(receiveLocks[sender_id]);
             }
             if (!buggyhash.ContainsKey(command))
                 defaultHandler?.Invoke(sender_id, command);
