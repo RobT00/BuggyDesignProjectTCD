@@ -10,6 +10,7 @@ two the buggies.
 
 Command | Explanation
 --- | ---
+ACK | For automatic communication testing, sent for every command received. Expects no reply
 PONG | Response to PING
 PING | Response to PONG
 GOING | Buggy is going after receiveing a GO command
@@ -27,11 +28,9 @@ INVALID | An invalid message has been recieved from the station, addressed to th
 
 Command | Explanation
 --- | ---
+SYN | For automatic communication testing, expects nothing other than the default ACK
 PING | For communications testing, expecting PONG
 PONG | For communications testing, expecting PING
-LED | Requests buggy to flash its LED for identification purposes
-CLOCK | Informs buggy that it will go clockwise around the track
-ACLOCK | Informs buggy that it will go anti-clockwise around the track
 GO | Commands buggy to go, following the line
 STOP | Commands buggy to stop immediately
 PARK | Commands buggy to turn in the appropriate direction for the parking lane, then stop after parking

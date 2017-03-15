@@ -7,18 +7,18 @@ Buggy* buggy;
 UltraSonic *sonic;
 
 void setup() {
-  comm = new CommTrans(1);
+  MotorControls().stop();
+  short buggyID = 1;
+  comm = new CommTrans(buggyID);
   comm->init();
-  buggy = new Buggy(comm);
+  buggy = new Buggy(buggyID, comm);
   comm->setDefaultHandler(   [] { comm->writeXbee("INVALID"); });
   comm->addHandler("PING",   [] { comm->writeXbee("PONG"); });
   comm->addHandler("PONG",   [] { comm->writeXbee("PING"); });
-  comm->addHandler("LED",    [] { buggy->flashLED(); });
+  comm->addHandler("SYN",    [] { });
   comm->addHandler("GO",     [] { buggy->go(); });
   comm->addHandler("STOP",   [] { buggy->stop(); });
   comm->addHandler("PARK",   [] { buggy->park(); });
-  comm->addHandler("CLOCK",  [] { buggy->setDirection(CLOCKWISE); });
-  comm->addHandler("ACLOCK", [] { buggy->setDirection(ANTI_CLOCKWISE); });
 
   attachInterrupt(digitalPinToInterrupt(Buggy::IR_PIN), IR_ISR, RISING);
 
@@ -30,7 +30,7 @@ void loop() {
   sonic->ultraLoop();
 }
 
-void serialEvent(){
+void serialEvent() {
   while (Serial.available()) {
     char message = Serial.read();
     comm->processCommand(message);

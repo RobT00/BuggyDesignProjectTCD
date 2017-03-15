@@ -8,7 +8,7 @@
 class CommTrans {
  public:
     CommTrans() = delete;
-    CommTrans(short ID) : my_ID(ID) {}
+    explicit CommTrans(short ID) : my_ID(ID) {}
     void init() const;
     void writeXbee(String command) const;
     void processCommand(char c);
