@@ -82,11 +82,24 @@ namespace Station
                 Console.WriteLine("How many buggies are you using? ");
                 Int32.TryParse(Console.ReadLine(), out buggies);
             }
-            Console.WriteLine("How many laps would you like to do? ");
-            Int32.TryParse(Console.ReadLine(), out laps);
+            while (laps <= 0)
+            {
+                Console.WriteLine("How many laps would you like to do? ");
+                Int32.TryParse(Console.ReadLine(), out laps);
+            }
             buggy1 = new Buggy(1, Direction.Clockwise, this, comms);
+            buggy1.mute();
+            buggy1.sendPing();
+            Console.WriteLine("Buggy: 1 OK");
+            buggy1.unmute();
             if (buggies == 2)
+            {
                 buggy2 = new Buggy(2, Direction.AntiClockwise, this, comms);
+                buggy2.mute();
+                buggy2.sendPong();
+                Console.WriteLine("Buggy: 2 OK");
+                buggy2.unmute();
+            }
             else
                 buggy2 = null;
             setNumberOfBuggies(buggies);

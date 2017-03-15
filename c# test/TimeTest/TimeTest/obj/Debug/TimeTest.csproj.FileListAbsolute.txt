@@ -1,0 +1,5 @@
+C:\Google Drive\SF\2E10\Z8_Machine\c# test\TimeTest\TimeTest\bin\Debug\TimeTest.exe.config
+C:\Google Drive\SF\2E10\Z8_Machine\c# test\TimeTest\TimeTest\bin\Debug\TimeTest.exe
+C:\Google Drive\SF\2E10\Z8_Machine\c# test\TimeTest\TimeTest\bin\Debug\TimeTest.pdb
+C:\Google Drive\SF\2E10\Z8_Machine\c# test\TimeTest\TimeTest\obj\Debug\TimeTest.exe
+C:\Google Drive\SF\2E10\Z8_Machine\c# test\TimeTest\TimeTest\obj\Debug\TimeTest.pdb

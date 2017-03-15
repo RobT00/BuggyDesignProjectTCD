@@ -16,6 +16,9 @@ namespace Station
         private int laps = 0;
         private Station station;
         private int requiredLaps = 0;
+        private bool muted = false;
+        private bool motion = false;
+        private Thread onlineThread;
 
         public Buggy(int ID, Direction direction, Station station, Communications comms)
         {
@@ -24,18 +27,44 @@ namespace Station
             this.comms = comms;
             this.station = station;
 
-            sendDirection();
+            onlineThread = new Thread(new ThreadStart(() =>
+            {
+                while (true)
+                {
+                    Thread.Sleep(1000);
+                    bool firstTry = syn();
+                    if (!firstTry)
+                    {
+                        buggyAction("Back online");
+                        if (motion)
+                        {
+                            go();
+                        }
+                    }
+                }
+            }));
+            onlineThread.Start();
         }
         public void setRequiredLaps(int laps)
         {
             requiredLaps = laps;
         }
+        public void mute()
+        {
+            muted = true;
+        }
+        public void unmute()
+        {
+            muted = false;
+        }
         public void go()
         {
+            motion = true;
             comms.send(ID, "GO");
         }
         public void stop()
         {
+            motion = false;
             comms.send(ID, "STOP");
         }
         public void sendPing()
@@ -45,6 +74,10 @@ namespace Station
         public void sendPong()
         {
             comms.send(ID, "PONG");
+        }
+        public bool syn()
+        {
+            return comms.send(ID, "SYN", () => { buggyAction("Offline"); });
         }
         public void onGantry(int gantry_num)
         {
@@ -105,37 +138,31 @@ namespace Station
                     Program.print("Buggy " + ID + " parked! " + (laps - 1) + " lap(s) completed!");
             }
         }
-        private void sendDirection()
-        {
-            if (direction == Direction.AntiClockwise)
-            {
-                comms.send(ID, "ACLOCK");
-            }
-            else
-            {
-                comms.send(ID, "CLOCK");
-            }
-        }
-
         public void pingRecieved()
         {
-            Program.print("PING recieved");
+            buggyAction("PING recieved");
         }
         public void pongRecieved()
         {
-            Program.print("PONG recieved");
+            buggyAction("PONG recieved");
         }
         public void going()
         {
-
+            buggyAction("GOING");
         }
         public void stopped()
         {
-
+            buggyAction("STOPPED");
         }
-        private void buggyAction()
+        private void buggyAction(String command = null)
         {
-            Console.Write("> Buggy " + ID + ": ");
+            if (!muted)
+            {
+                if (command == null)
+                    Console.Write("> Buggy " + ID + ": " + command);
+                else
+                    Console.WriteLine("> Buggy " + ID + ": " + command);
+            }
         }
         private void trackState(string call, int num)
         {
@@ -173,17 +200,6 @@ namespace Station
         {
             buggyAction();
             Console.WriteLine("is on lap " + laps);
-        }
-        private int earlyAction()
-        {
-            int a;
-            {
-                if (direction == Direction.AntiClockwise)
-                    a = 2;
-                else
-                    a = 3;
-            }
-            return a;
         }
     }
 }
