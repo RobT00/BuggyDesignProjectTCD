@@ -25,7 +25,7 @@ class Buggy {
     MotorControls motor;
 
     bool going = false;
-    Direction travelDirection = CLOCKWISE;
+    Direction travelDirection;
     unsigned long travelledTime = 0l;
     unsigned long lastGoTime = 0l;
  
@@ -44,10 +44,16 @@ class Buggy {
     static const short LED_PIN = 13;
   
     Buggy() = delete;
-    Buggy(CommTrans *c) : comms(c) {
+    Buggy(short ID, CommTrans *c) : comms(c) {
       pinMode(LED_PIN, OUTPUT);
       pinMode(IR_PIN, INPUT);
       motor.stop();
+      if (ID == 1) {
+        travelDirection = CLOCKWISE;
+      }
+      else {
+        travelDirection = ANTI_CLOCKWISE;
+      }
     };
 
     void go(bool silent = false);
