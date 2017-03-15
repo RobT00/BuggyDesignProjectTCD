@@ -50,11 +50,10 @@ class Buggy {
       motor.stop();
       if (ID == 1) {
         travelDirection = CLOCKWISE;
-      }
-      else {
+      } else {
         travelDirection = ANTI_CLOCKWISE;
       }
-    };
+    }
 
     void go(bool silent = false);
     void stop(bool silent = false);
