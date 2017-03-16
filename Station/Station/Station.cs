@@ -53,7 +53,7 @@ namespace Station
             else if (ID == 2)
                 getBuggyForID(1)?.go();
             else
-                Console.WriteLine("Something goofed...");
+                Program.print("Something goofed...", ConsoleColor.Magenta);
         }
         public void setNumberOfLabs(int laps)
         {
@@ -90,14 +90,14 @@ namespace Station
             buggy1 = new Buggy(1, Direction.Clockwise, this, comms);
             buggy1.mute();
             buggy1.sendPing();
-            Console.WriteLine("Buggy: 1 OK");
+            Program.print("Buggy: 1 OK", buggy1.getColour());
             buggy1.unmute();
             if (buggies == 2)
             {
                 buggy2 = new Buggy(2, Direction.AntiClockwise, this, comms);
                 buggy2.mute();
                 buggy2.sendPong();
-                Console.WriteLine("Buggy: 2 OK");
+                Program.print("Buggy: 2 OK", buggy2.getColour());
                 buggy2.unmute();
             }
             else

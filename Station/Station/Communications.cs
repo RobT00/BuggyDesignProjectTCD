@@ -56,7 +56,7 @@ namespace Station
                                 offlineHandler();
                             } else
                             {
-                                Console.WriteLine("Command: " + command + "\nnot being recieved by buggy: " + buggy_id +
+                                Program.print("Command: " + command + "\nnot being recieved by buggy: " + buggy_id +
                                 "\nWill keep sending command");
                             }
                         }
@@ -72,7 +72,7 @@ namespace Station
             {
                 if (offlineHandler == null)
                 {
-                    Console.WriteLine(" Command: " + command + " received after " + reps + " attempts");
+                    Program.print(" Command: " + command + " received after " + reps + " attempts");
                 }
                 return false;
             }
