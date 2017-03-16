@@ -16,9 +16,10 @@ namespace Station
         private int laps = 0;
         private Station station;
         private int requiredLaps = 0;
-        private bool muted = false;
-        private bool motion = false;
-        private Thread onlineThread;
+        // private bool muted = false;
+        private volatile bool motion = false;
+        private Thread onlineThread = null;
+        private volatile bool onlineThreadShouldRun = false;
 
         public Buggy(int ID, Direction direction, Station station, Communications comms)
         {
@@ -26,37 +27,53 @@ namespace Station
             this.direction = direction;
             this.comms = comms;
             this.station = station;
-
+        }
+        public void startOnlineCheck()
+        {
+            if (onlineThread != null)
+                return;
             onlineThread = new Thread(new ThreadStart(() =>
             {
-                while (true)
+                while (onlineThreadShouldRun)
                 {
-                    Thread.Sleep(1000);
-                    bool firstTry = syn();
-                    if (!firstTry)
+                    try
                     {
-                        buggyAction("Back online");
-                        if (motion)
+                        Thread.Sleep(1000);
+                        bool firstTry = syn();
+                        if (!firstTry)
                         {
-                            go();
+                            buggyAction("Back online");
+                            if (motion)
+                            {
+                                go();
+                            }
                         }
-                    }
+                    } catch (ThreadInterruptedException e) {}
                 }
             }));
+            onlineThreadShouldRun = true;
             onlineThread.Start();
+        }
+        public void stopOnlineCheck()
+        {
+            if (onlineThread == null)
+                return;
+            onlineThreadShouldRun = false;
+            onlineThread.Interrupt();
+            onlineThread.Join();
         }
         public void setRequiredLaps(int laps)
         {
             requiredLaps = laps;
         }
-        public void mute()
-        {
-            muted = true;
-        }
-        public void unmute()
-        {
-            muted = false;
-        }
+        // public void mute()
+        // {
+            // muted = true;
+        // }
+        // public void unmute()
+        // {
+            // muted = false;
+        // }
         public void go()
         {
             motion = true;
@@ -75,9 +92,13 @@ namespace Station
         {
             comms.send(ID, "PONG");
         }
-        public bool syn()
+        public bool syn(bool silent = false)
         {
-            return comms.send(ID, "SYN", () => { buggyAction("Offline"); });
+            return comms.send(ID, "SYN", () =>
+                    {
+                        if (!silent)
+                            buggyAction("Offline");
+                    });
         }
         public void onGantry(int gantry_num)
         {
@@ -156,13 +177,13 @@ namespace Station
         }
         private void buggyAction(String command = null)
         {
-            if (!muted)
-            {
+            // if (!muted)
+            // {
                 if (command == null)
                     Console.Write("> Buggy " + ID + ": " + command);
                 else
                     Console.WriteLine("> Buggy " + ID + ": " + command);
-            }
+            // }
         }
         private void trackState(string call, int num)
         {

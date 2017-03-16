@@ -8,8 +8,8 @@ namespace Station
 {
     class Station
     {
-        private Buggy buggy1;
-        private Buggy buggy2;
+        private Buggy buggy1 = null;
+        private Buggy buggy2 = null;
         private Communications comms;
         private int number_of_buggies = 0;
 
@@ -75,6 +75,11 @@ namespace Station
         }
         public void setUp()
         {
+            if (buggy1 != null)
+                buggy1.stopOnlineCheck();
+            if (buggy2 != null)
+                buggy2.stopOnlineCheck();
+
             int buggies = 3;
             int laps = 0;
             while (buggies > 2 || buggies <= 0)
@@ -88,17 +93,15 @@ namespace Station
                 Int32.TryParse(Console.ReadLine(), out laps);
             }
             buggy1 = new Buggy(1, Direction.Clockwise, this, comms);
-            buggy1.mute();
-            buggy1.sendPing();
-            Console.WriteLine("Buggy: 1 OK");
-            buggy1.unmute();
+            buggy1.syn(silent: true);
+            Console.WriteLine("Buggy 1 OK");
+            buggy1.startOnlineCheck();
             if (buggies == 2)
             {
                 buggy2 = new Buggy(2, Direction.AntiClockwise, this, comms);
-                buggy2.mute();
-                buggy2.sendPong();
-                Console.WriteLine("Buggy: 2 OK");
-                buggy2.unmute();
+                buggy2.syn(silent: true);
+                Console.WriteLine("Buggy 2 OK");
+                buggy2.startOnlineCheck();
             }
             else
                 buggy2 = null;
