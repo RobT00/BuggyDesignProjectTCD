@@ -14,15 +14,16 @@ namespace Station
 
         private Dictionary<string, Action<int>> buggyhash = new Dictionary<string, Action<int>>();
         private Action<int, string> defaultHandler = null;
+        private Thread commandThread = new Thread(new ThreadStart(() => { }));
 
-        private object[] sendLocks = { new object(), new object() };
-        private object[] receiveLocks = { new object(), new object() };
-        private bool[] received = { false, false };
+        private object[] sendLocks = { new object(), new object(), new object() };
+        private object[] receiveLocks = { new object(), new object(), new object() };
+        private bool[] received = { false, false, false };
         private object portLock = new object();
 
         public Communications()
         {
-            port.PortName = "COM11";
+            port.PortName = "COM13";
             port.BaudRate = 9600;
             port.Open();
 
@@ -64,7 +65,7 @@ namespace Station
                         {
                             port.Write(sender_id + " " + buggy_id + " " + command + "\n");
                         }
-                        Monitor.Wait(receiveLocks[buggy_id], 100);
+                        Monitor.Wait(receiveLocks[buggy_id], 200);
                     }
                 }
             }
@@ -91,11 +92,13 @@ namespace Station
                 return;
             if (sender_id != 1 && sender_id != 2)
                 return;
-
-            lock (receiveLocks[sender_id])
+            if (command == "ACK")
             {
-                received[sender_id] = true;
-                Monitor.Pulse(receiveLocks[sender_id]);
+                lock (receiveLocks[sender_id])
+                {
+                    received[sender_id] = true;
+                    Monitor.Pulse(receiveLocks[sender_id]);
+                }
             }
             if (!buggyhash.ContainsKey(command))
                 defaultHandler?.Invoke(sender_id, command);

@@ -103,7 +103,7 @@ namespace Station
         public void onGantry(int gantry_num)
         {
             stop();
-            Thread.Sleep(1000);
+            //Thread.Sleep(1000);
 
             if (((direction == Direction.Clockwise) && (gantry_num == 2)) || ((direction == Direction.AntiClockwise) && (gantry_num == 1)))
                 laps++;
