@@ -1,10 +1,12 @@
 #include "CommTrans.h"
 #include "Buggy.h"
 #include "UltraSonic.h"
+#include "Coolness.h"
 
 CommTrans* comm;
 Buggy* buggy;
 UltraSonic *sonic;
+Coolness *cool;
 
 void setup() {
   MotorControls().stop();
@@ -23,11 +25,14 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(Buggy::IR_PIN), IR_ISR, RISING);
 
   sonic = new UltraSonic(buggy, comm);
+
+  cool = new Coolness(buggy);
 }
 
 void loop() {
   buggy->update();
   sonic->ultraLoop();
+  cool->update();
 }
 
 void serialEvent() {
