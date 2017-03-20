@@ -14,8 +14,8 @@ namespace Station
 
         private Dictionary<string, Action<int>> buggyhash = new Dictionary<string, Action<int>>();
         private Action<int, string> defaultHandler = null;
-        private Thread commandThread = new Thread(new ThreadStart(() => { }));
 
+        // Three objects required to enable using buggy IDs as indices (1 and 2)
         private object[] sendLocks = { new object(), new object(), new object() };
         private object[] receiveLocks = { new object(), new object(), new object() };
         private bool[] received = { false, false, false };
@@ -92,6 +92,7 @@ namespace Station
                 return;
             if (sender_id != 1 && sender_id != 2)
                 return;
+
             if (command == "ACK")
             {
                 lock (receiveLocks[sender_id])
@@ -100,10 +101,12 @@ namespace Station
                     Monitor.Pulse(receiveLocks[sender_id]);
                 }
             }
-            if (!buggyhash.ContainsKey(command))
-                defaultHandler?.Invoke(sender_id, command);
-            else
-                buggyhash[command](sender_id);
+            if (buggyhash.ContainsKey(command)) {
+                Action<int> handler = buggyhash[command];
+                Task.Run(() => handler?.Invoke(sender_id));
+            } else {
+                Task.Run(() => defaultHandler?.Invoke(sender_id, command));
+            }
         }
         public void addCommand(string command, Action<int> handler)
         {

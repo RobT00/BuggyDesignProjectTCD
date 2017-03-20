@@ -103,11 +103,11 @@ namespace Station
         public void onGantry(int gantry_num)
         {
             stop();
-            //Thread.Sleep(1000);
+            Thread.Sleep(1000);
 
             if (((direction == Direction.Clockwise) && (gantry_num == 2)) || ((direction == Direction.AntiClockwise) && (gantry_num == 1)))
                 laps++;
-            else if (((direction == Direction.Clockwise) && (last_gantry == 1) && (gantry_num != 2)) 
+            else if (((direction == Direction.Clockwise) && (last_gantry == 1) && (gantry_num != 2))
                 || ((direction == Direction.AntiClockwise) && (last_gantry == 2) && (gantry_num != 1))) {
                 laps++;
             }
@@ -142,7 +142,7 @@ namespace Station
         }
         public void goPark()
         {
-            comms.send(ID, "PARK");    
+            comms.send(ID, "PARK");
         }
         public void buggyParked()
         {
@@ -201,12 +201,12 @@ namespace Station
                     Console.Write(" gantry interpreted as invalid");
                 else
                     Console.Write((" stopped at gantry " + last_gantry + " Entering track section: "));
-                if ((laps >= requiredLaps && last_gantry == 2) 
+                if ((laps >= requiredLaps && last_gantry == 2)
                     || (direction == Direction.AntiClockwise && last_gantry == 1)) {
                     Console.WriteLine(("Park Lane"));
                     return;
                 }
-                Console.WriteLine((num.ToString())); 
+                Console.WriteLine((num.ToString()));
             }
             else if (call == "Stop")
             {
