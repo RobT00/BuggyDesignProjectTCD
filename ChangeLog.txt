@@ -50,3 +50,11 @@ FUNCTIONALITY FIXED: Timings
 BY WHO: Aron
 FUNCTIONALITY FIXED: Communication
 BY WHO: Rob, Aron, Eoin
+
+#WEEK 9
+FUNCTIONALITY ADDED: Station repeats command until buggy acknowledges receipt
+BY WHO: Rob, Aron
+FUNCTIONALITY ADDED: Station pings Buggy to ensure it is online
+BY WHO: Rob, Aron
+FUNCTIONALITY ADDED: Improved robustness
+BY WHO: Rob, Aron
