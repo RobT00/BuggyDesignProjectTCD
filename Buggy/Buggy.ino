@@ -1,19 +1,23 @@
 #include "CommTrans.h"
 #include "Buggy.h"
 #include "UltraSonic.h"
-#include "Coolness.h"
+#include "Lights.h"
 
-CommTrans* comm;
-Buggy* buggy;
+CommTrans *comm;
+MotorControls *motors;
+Buggy *buggy;
 UltraSonic *sonic;
-Coolness *cool;
+Lights *christmasTree;
 
 void setup() {
-  MotorControls().stop();
+  motors = new MotorControls();
+  christmasTree = new Lights();
+  christmasTree->setMotor(motors);
+
   short buggyID = 1;
   comm = new CommTrans(buggyID);
   comm->init();
-  buggy = new Buggy(buggyID, comm);
+  buggy = new Buggy(buggyID, motors, comm);
   comm->setDefaultHandler(   [] { comm->writeXbee("INVALID"); });
   comm->addHandler("PING",   [] { comm->writeXbee("PONG"); });
   comm->addHandler("PONG",   [] { comm->writeXbee("PING"); });
@@ -25,14 +29,13 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(Buggy::IR_PIN), IR_ISR, RISING);
 
   sonic = new UltraSonic(buggy, comm);
-
-  cool = new Coolness(buggy);
+  christmasTree->setUltrasonic(sonic);
 }
 
 void loop() {
   buggy->update();
   sonic->ultraLoop();
-  cool->update();
+  christmasTree->update();
 }
 
 void serialEvent() {
