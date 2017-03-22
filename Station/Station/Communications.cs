@@ -69,7 +69,7 @@ namespace Station
                     }
                 }
             }
-            if (reps > 1)
+            if (reps > 2)
             {
                 if (offlineHandler == null)
                 {
