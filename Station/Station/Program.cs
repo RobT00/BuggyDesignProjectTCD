@@ -9,7 +9,7 @@ namespace Station
     class Program
     {
         private static object printLock = new Object();
-        private static List<string> inputBuffer = { };
+        private static List<string> inputBuffer = new List<string>();
         private static int inputBufferIndex = -1;
         private static ConsoleColor inputColour = ConsoleColor.DarkGreen;
         private static ConsoleColor emptyColour = ConsoleColor.Black;
@@ -24,7 +24,11 @@ namespace Station
                 if (input == "EXIT")
                     Environment.Exit(0);
                 if (input == "RESET")
+                {
+                    clearInput();
+                    Console.CursorLeft = 0;
                     station.setUp();
+                }
                 if (input.Length < 3)
                 {
                     print("Station: Message too short");
@@ -64,6 +68,7 @@ namespace Station
 
         private static void printInput()
         {
+            clearInput();
             lock (printLock)
             {
                 Console.CursorLeft = 0;
@@ -71,6 +76,7 @@ namespace Station
                 Console.Write("> ");
                 if (inputBufferIndex != -1)
                     Console.Write(inputBuffer[inputBufferIndex]);
+                Console.BackgroundColor = emptyColour;
             }
         }
 
@@ -97,10 +103,11 @@ namespace Station
             printInput();
             while(true)
             {
-                ConsoleKeyInfo key = Console.ReadKey(false);
-                if (key.Modifiers & ConsoleModifiers.Alt)
+                ConsoleKeyInfo key = Console.ReadKey(true);
+                clearInput();
+                if ((key.Modifiers & ConsoleModifiers.Alt) == ConsoleModifiers.Alt)
                     continue;
-                if (key.Modifiers & ConsoleModifiers.Control)
+                if ((key.Modifiers & ConsoleModifiers.Control) == ConsoleModifiers.Control)
                     continue;
                 if (key.Key == ConsoleKey.UpArrow)
                 {
@@ -112,7 +119,7 @@ namespace Station
                 {
                     // Change last, not index
                     if (inputBufferIndex != inputBuffer.Count - 1) {
-                        inputBuffer.Last() = inputBuffer[inputBufferIndex];
+                        inputBuffer[inputBuffer.Count - 1] = inputBuffer[inputBufferIndex];
                         inputBufferIndex = inputBuffer.Count - 1;
                     }
 
@@ -121,28 +128,35 @@ namespace Station
                     {
                         print(inputBuffer.Last(), inputColour);
                         break;
-                    } else if (key.Key == ConsoleKey.Backspace &&
-                            inputBuffer.Last().Length != 0) {
-                        // Clear background
-                        lock (printLock)
-                        {
-                            Console.BackgroundColor = emptyColour;
-                            Console.CursorLeft--;
-                            Console.Write(" ");
-                        }
+                    } else if (key.Key == ConsoleKey.Backspace)
+                    {
+                        if (inputBuffer.Last().Length != 0) {
+                            // Clear background
+                            lock (printLock)
+                            {
+                                Console.BackgroundColor = emptyColour;
+                                Console.CursorLeft--;
+                                Console.Write(" ");
+                                Console.CursorLeft--;
+                            }
 
-                        inputBuffer = inputBuffer.Last().Substring(0, inputBuffer.Last().Length - 1);
+                            inputBuffer[inputBuffer.Count - 1] = inputBuffer.Last().Substring(0, inputBuffer.Last().Length - 1);
+                        }
+                        
                     } else if (key.KeyChar != '\u0000')
                     {
-                        inputBuffer.Last() += key.KeyChar;
+                        inputBuffer[inputBuffer.Count - 1] += key.KeyChar;
                     }
                 }
                 printInput();
             }
             return inputBuffer.Last();
         }
-
-        public static void print(string message, ConsoleColor backgroundColor = emptyColour)
+        public static void print(string message)
+        {
+            print(message, emptyColour);
+        }
+        public static void print(string message, ConsoleColor backgroundColor)
         {
             lock (printLock)
             {
@@ -151,6 +165,7 @@ namespace Station
                 Console.BackgroundColor = backgroundColor;
                 Console.WriteLine(message);
                 printInput();
+                Console.BackgroundColor = emptyColour;
             }
         }
     }

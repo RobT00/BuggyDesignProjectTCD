@@ -26,8 +26,8 @@ namespace Station
             comms.addCommand(new Regex(@"^GANTRY(?<GantryID>[123])$"), (int ID, GroupCollection groups) => getBuggyForID(ID)?.onGantry(Int32.Parse(groups["GantryID"].Value)));
             comms.addCommand("GANTRY_INVALID", (int ID) => getBuggyForID(ID)?.onGantry(-10));
             comms.addCommand("PARKED", (int ID) => getBuggyForID(ID)?.buggyParked());
-            comms.addCommand("OBSTACLE", (int ID) => getBuggyForID(ID)?.stopped()); //may make new function to state the obstacle caused stop
-            comms.addCommand("PATHCLEAR", (int ID) => getBuggyForID(ID)?.going()); //same as above
+            comms.addCommand("OBSTACLE", (int ID) => getBuggyForID(ID)?.obstacle("OBSTACLE"));
+            comms.addCommand("PATHCLEAR", (int ID) => getBuggyForID(ID)?.obstacle("PATHCLEAR"));
             comms.addCommand(new Regex(@"^IRLength: (?<Length>\d+)$"), (int ID, GroupCollection groups) => Program.print("Buggy " + ID + " Pulse length: " + groups["Length"].Value));
             comms.addCommand(new Regex(@"^INVALID: (?<Command>.*)$"), (int ID, GroupCollection groups) => Program.print("Buggy " + ID + "received invalid command: " + groups["Command"].Value));
             setUp();

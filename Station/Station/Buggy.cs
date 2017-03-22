@@ -142,6 +142,10 @@ namespace Station
         {
             comms.send(ID, "PARK");
         }
+        public void obstacle(string condition)
+        {
+            trackState(condition);
+        }
         public void buggyParked()
         {
             motion = false;
@@ -192,7 +196,7 @@ namespace Station
             }
             if (call == "Gantry") {
                 onLap();
-                if (num == -10)
+                if (last_gantry == -10)
                     buggyAction("gantry interpreted as invalid");
                 else
                 {
@@ -214,6 +218,14 @@ namespace Station
             else if (call == "Go")
             {
                 buggyAction("is on the move in section " + section);
+            }
+            else if (call == "OBSTACLE")
+            {
+                buggyAction("has detected an obstacle in section " + section);
+            }
+            else if (call == "PATHCLEAR")
+            {
+                buggyAction("is now able to progress in section " + section);
             }
         }
         private void onLap()

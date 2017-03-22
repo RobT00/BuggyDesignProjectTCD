@@ -24,7 +24,7 @@ namespace Station
 
         public Communications()
         {
-            port.PortName = "COM15";
+            port.PortName = "COM13";
             port.BaudRate = 9600;
             port.Open();
 
