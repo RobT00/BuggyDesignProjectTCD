@@ -20,54 +20,7 @@ namespace Station
             Station station = new Station();
             while (true)
             {
-                inputBuffer.Add("");
-                inputBufferIndex = inputBuffer.Count - 1;
-                printInput();
-                while(true)
-                {
-                    ConsoleKeyInfo key = Console.ReadKey(false);
-                    if (key.Modifiers & ConsoleModifiers.Alt)
-                        continue;
-                    if (key.Modifiers & ConsoleModifiers.Control)
-                        continue;
-                    if (key.Key == ConsoleKey.UpArrow)
-                    {
-                        inputBufferIndex = Math.Max(0, inputBufferIndex - 1);
-                    } else if (key.Key == ConsoleKey.DownArrow)
-                    {
-                        inputBufferIndex = Math.Min(inputBuffer.Count - 1, inputBufferIndex + 1);
-                    } else
-                    {
-                        // Change last, not index
-                        if (inputBufferIndex != inputBuffer.Count - 1) {
-                            inputBuffer.Last() = inputBuffer[inputBufferIndex];
-                            inputBufferIndex = inputBuffer.Count - 1;
-                        }
-
-                        if (key.Key == ConsoleKey.Enter &&
-                                inputBuffer.Last().Length != 0)
-                        {
-                            print(inputBuffer.Last(), inputColour);
-                            break;
-                        } else if (key.Key == ConsoleKey.Backspace &&
-                                inputBuffer.Last().Length != 0) {
-                            // Clear background
-                            lock (printLock)
-                            {
-                                Console.BackgroundColor = emptyColour;
-                                Console.CursorLeft--;
-                                Console.Write(" ");
-                            }
-
-                            inputBuffer = inputBuffer.Last().Substring(0, inputBuffer.Last().Length - 1);
-                        } else if (key.KeyChar != '\u0000')
-                        {
-                            inputBuffer.Last() += key.KeyChar;
-                        }
-                    }
-                    printInput();
-                }
-                string input = inputBuffer.Last();
+                string input = readInput();
                 if (input == "EXIT")
                     Environment.Exit(0);
                 if (input == "RESET")
@@ -135,6 +88,58 @@ namespace Station
                 for (int i = 0; i < length; i++)
                     Console.Write(" ");
             }
+        }
+
+        private static string readInput()
+        {
+            inputBuffer.Add("");
+            inputBufferIndex = inputBuffer.Count - 1;
+            printInput();
+            while(true)
+            {
+                ConsoleKeyInfo key = Console.ReadKey(false);
+                if (key.Modifiers & ConsoleModifiers.Alt)
+                    continue;
+                if (key.Modifiers & ConsoleModifiers.Control)
+                    continue;
+                if (key.Key == ConsoleKey.UpArrow)
+                {
+                    inputBufferIndex = Math.Max(0, inputBufferIndex - 1);
+                } else if (key.Key == ConsoleKey.DownArrow)
+                {
+                    inputBufferIndex = Math.Min(inputBuffer.Count - 1, inputBufferIndex + 1);
+                } else
+                {
+                    // Change last, not index
+                    if (inputBufferIndex != inputBuffer.Count - 1) {
+                        inputBuffer.Last() = inputBuffer[inputBufferIndex];
+                        inputBufferIndex = inputBuffer.Count - 1;
+                    }
+
+                    if (key.Key == ConsoleKey.Enter &&
+                            inputBuffer.Last().Length != 0)
+                    {
+                        print(inputBuffer.Last(), inputColour);
+                        break;
+                    } else if (key.Key == ConsoleKey.Backspace &&
+                            inputBuffer.Last().Length != 0) {
+                        // Clear background
+                        lock (printLock)
+                        {
+                            Console.BackgroundColor = emptyColour;
+                            Console.CursorLeft--;
+                            Console.Write(" ");
+                        }
+
+                        inputBuffer = inputBuffer.Last().Substring(0, inputBuffer.Last().Length - 1);
+                    } else if (key.KeyChar != '\u0000')
+                    {
+                        inputBuffer.Last() += key.KeyChar;
+                    }
+                }
+                printInput();
+            }
+            return inputBuffer.Last();
         }
 
         public static void print(string message, ConsoleColor backgroundColor = emptyColour)
