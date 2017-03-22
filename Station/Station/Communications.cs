@@ -15,14 +15,15 @@ namespace Station
         private Dictionary<string, Action<int>> buggyhash = new Dictionary<string, Action<int>>();
         private Action<int, string> defaultHandler = null;
 
-        private object[] sendLocks = { new object(), new object() };
-        private object[] receiveLocks = { new object(), new object() };
-        private bool[] received = { false, false };
+        // Three objects required to enable using buggy IDs as indices (1 and 2)
+        private object[] sendLocks = { new object(), new object(), new object() };
+        private object[] receiveLocks = { new object(), new object(), new object() };
+        private bool[] received = { false, false, false };
         private object portLock = new object();
 
         public Communications()
         {
-            port.PortName = "COM11";
+            port.PortName = "COM15";
             port.BaudRate = 9600;
             port.Open();
 
@@ -49,7 +50,7 @@ namespace Station
                     {
                         reps++;
 
-                        if (reps == 2 && !received[buggy_id])
+                        if (reps == 3 && !received[buggy_id])
                         {
                             if (offlineHandler != null)
                             {
@@ -64,7 +65,7 @@ namespace Station
                         {
                             port.Write(sender_id + " " + buggy_id + " " + command + "\n");
                         }
-                        Monitor.Wait(receiveLocks[buggy_id], 100);
+                        Monitor.Wait(receiveLocks[buggy_id], 200);
                     }
                 }
             }
@@ -92,15 +93,20 @@ namespace Station
             if (sender_id != 1 && sender_id != 2)
                 return;
 
-            lock (receiveLocks[sender_id])
+            if (command == "ACK")
             {
-                received[sender_id] = true;
-                Monitor.Pulse(receiveLocks[sender_id]);
+                lock (receiveLocks[sender_id])
+                {
+                    received[sender_id] = true;
+                    Monitor.Pulse(receiveLocks[sender_id]);
+                }
             }
-            if (!buggyhash.ContainsKey(command))
-                defaultHandler?.Invoke(sender_id, command);
-            else
-                buggyhash[command](sender_id);
+            if (buggyhash.ContainsKey(command)) {
+                Action<int> handler = buggyhash[command];
+                Task.Run(() => handler?.Invoke(sender_id));
+            } else {
+                Task.Run(() => defaultHandler?.Invoke(sender_id, command));
+            }
         }
         public void addCommand(string command, Action<int> handler)
         {
