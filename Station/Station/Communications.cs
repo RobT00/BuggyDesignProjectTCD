@@ -16,14 +16,15 @@ namespace Station
         private Dictionary<Regex, Action<int, GroupCollection>> buggyhash = new Dictionary<Regex, Action<int, GroupCollection>>();
         private Action<int, string> defaultHandler = null;
 
-        private object[] sendLocks = { new object(), new object() };
-        private object[] receiveLocks = { new object(), new object() };
-        private bool[] received = { false, false };
+        // Three objects required to enable using buggy IDs as indices (1 and 2)
+        private object[] sendLocks = { new object(), new object(), new object() };
+        private object[] receiveLocks = { new object(), new object(), new object() };
+        private bool[] received = { false, false, false };
         private object portLock = new object();
 
         public Communications()
         {
-            port.PortName = "COM11";
+            port.PortName = "COM15";
             port.BaudRate = 9600;
             port.Open();
 
@@ -50,7 +51,7 @@ namespace Station
                     {
                         reps++;
 
-                        if (reps == 2 && !received[buggy_id])
+                        if (reps == 3 && !received[buggy_id])
                         {
                             if (offlineHandler != null)
                             {
@@ -65,7 +66,7 @@ namespace Station
                         {
                             port.Write(sender_id + " " + buggy_id + " " + command + "\n");
                         }
-                        Monitor.Wait(receiveLocks[buggy_id], 100);
+                        Monitor.Wait(receiveLocks[buggy_id], 200);
                     }
                 }
             }
@@ -93,10 +94,13 @@ namespace Station
             if (sender_id != 1 && sender_id != 2)
                 return;
 
-            lock (receiveLocks[sender_id])
+            if (command == "ACK")
             {
-                received[sender_id] = true;
-                Monitor.Pulse(receiveLocks[sender_id]);
+                lock (receiveLocks[sender_id])
+                {
+                    received[sender_id] = true;
+                    Monitor.Pulse(receiveLocks[sender_id]);
+                }
             }
 
             bool matched = false;
@@ -105,12 +109,13 @@ namespace Station
                 Match match = regex.Match(command);
                 if (match.Success) {
                     matched = true;
-                    buggyhash[regex](sender_id, match.Groups);
+                    Action<int> handler = buggyhash[regex];
+                    Task.Run(() => handler?.Invoke(sender_id, match.Groups));
                 }
             }
             if (!matched)
             {
-                defaultHandler?.Invoke(sender_id, command);
+                Task.Run(() => defaultHandler?.Invoke(sender_id, command));
             }
         }
         public void addCommand(string command, Action<int> handler)
