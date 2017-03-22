@@ -23,7 +23,7 @@ namespace Station
 
         public Communications()
         {
-            port.PortName = "COM13";
+            port.PortName = "COM15";
             port.BaudRate = 9600;
             port.Open();
 
@@ -50,7 +50,7 @@ namespace Station
                     {
                         reps++;
 
-                        if (reps == 2 && !received[buggy_id])
+                        if (reps == 3 && !received[buggy_id])
                         {
                             if (offlineHandler != null)
                             {
