@@ -104,13 +104,13 @@ namespace Station
             }
 
             bool matched = false;
-            foreach (Regex regex in buggyhash)
+            foreach (KeyValuePair<Regex, Action<int, GroupCollection>> pair in buggyhash)
             {
-                Match match = regex.Match(command);
+                Match match = pair.Key.Match(command);
                 if (match.Success) {
                     matched = true;
-                    Action<int> handler = buggyhash[regex];
-                    Task.Run(() => handler?.Invoke(sender_id, match.Groups));
+                    //Action<int> handler = buggyhash[pair.Key];
+                    Task.Run(() => pair.Value?.Invoke(sender_id, match.Groups));
                 }
             }
             if (!matched)
