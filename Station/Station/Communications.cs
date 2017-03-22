@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO.Ports;
 using System.Threading;
+using System.Text.RegularExpressions;
 
 namespace Station
 {
@@ -12,17 +13,18 @@ namespace Station
     {
         private SerialPort port = new SerialPort();
 
-        private Dictionary<string, Action<int>> buggyhash = new Dictionary<string, Action<int>>();
+        private Dictionary<Regex, Action<int, GroupCollection>> buggyhash = new Dictionary<Regex, Action<int, GroupCollection>>();
         private Action<int, string> defaultHandler = null;
 
-        private object[] sendLocks = { new object(), new object() };
-        private object[] receiveLocks = { new object(), new object() };
-        private bool[] received = { false, false };
+        // Three objects required to enable using buggy IDs as indices (1 and 2)
+        private object[] sendLocks = { new object(), new object(), new object() };
+        private object[] receiveLocks = { new object(), new object(), new object() };
+        private bool[] received = { false, false, false };
         private object portLock = new object();
 
         public Communications()
         {
-            port.PortName = "COM11";
+            port.PortName = "COM15";
             port.BaudRate = 9600;
             port.Open();
 
@@ -49,7 +51,7 @@ namespace Station
                     {
                         reps++;
 
-                        if (reps == 2 && !received[buggy_id])
+                        if (reps == 3 && !received[buggy_id])
                         {
                             if (offlineHandler != null)
                             {
@@ -64,11 +66,11 @@ namespace Station
                         {
                             port.Write(sender_id + " " + buggy_id + " " + command + "\n");
                         }
-                        Monitor.Wait(receiveLocks[buggy_id], 100);
+                        Monitor.Wait(receiveLocks[buggy_id], 200);
                     }
                 }
             }
-            if (reps > 1)
+            if (reps > 2)
             {
                 if (offlineHandler == null)
                 {
@@ -92,17 +94,35 @@ namespace Station
             if (sender_id != 1 && sender_id != 2)
                 return;
 
-            lock (receiveLocks[sender_id])
+            if (command == "ACK")
             {
-                received[sender_id] = true;
-                Monitor.Pulse(receiveLocks[sender_id]);
+                lock (receiveLocks[sender_id])
+                {
+                    received[sender_id] = true;
+                    Monitor.Pulse(receiveLocks[sender_id]);
+                }
             }
-            if (!buggyhash.ContainsKey(command))
-                defaultHandler?.Invoke(sender_id, command);
-            else
-                buggyhash[command](sender_id);
+
+            bool matched = false;
+            foreach (KeyValuePair<Regex, Action<int, GroupCollection>> pair in buggyhash)
+            {
+                Match match = pair.Key.Match(command);
+                if (match.Success) {
+                    matched = true;
+                    //Action<int> handler = buggyhash[pair.Key];
+                    Task.Run(() => pair.Value?.Invoke(sender_id, match.Groups));
+                }
+            }
+            if (!matched)
+            {
+                Task.Run(() => defaultHandler?.Invoke(sender_id, command));
+            }
         }
         public void addCommand(string command, Action<int> handler)
+        {
+            addCommand(new Regex("^" + command + "$"), (int ID, GroupCollection groups) => handler(ID));
+        }
+        public void addCommand(Regex command, Action<int, GroupCollection> handler)
         {
             buggyhash.Add(command, handler);
         }
