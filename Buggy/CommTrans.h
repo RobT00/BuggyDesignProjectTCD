@@ -13,11 +13,11 @@ class CommTrans {
     void writeXbee(String command) const;
     void processCommand(char c);
     void addHandler(String command, VoidFunction handler);
-    void setDefaultHandler(VoidFunction handler);
+    void setDefaultHandler(StringVoidFunction handler);
 
  private:
     String message;
     HashMap handlers;
-    VoidFunction defaultHandler = NULL;
+    StringVoidFunction defaultHandler = NULL;
     const short my_ID;
 };

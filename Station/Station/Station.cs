@@ -28,7 +28,8 @@ namespace Station
             comms.addCommand("PARKED", (int ID) => getBuggyForID(ID)?.buggyParked());
             comms.addCommand("OBSTACLE", (int ID) => getBuggyForID(ID)?.stopped()); //may make new function to state the obstacle caused stop
             comms.addCommand("PATHCLEAR", (int ID) => getBuggyForID(ID)?.going()); //same as above
-            comms.addCommand(new Regex(@"^IRLength: (?<Length>\d+)$"), (int ID, GroupCollection groups) => Console.WriteLine("Buggy " + ID + " Pulse length: " + Int32.Parse(groups["Length"].Value)));
+            comms.addCommand(new Regex(@"^IRLength: (?<Length>\d+)$"), (int ID, GroupCollection groups) => Console.WriteLine("Buggy " + ID + " Pulse length: " + groups["Length"].Value));
+            comms.addCommand(new Regex(@"^INVALID: (?<Command>.*)$"), (int ID, GroupCollection groups) => Console.WriteLine("Buggy " + ID + "received invalid command: " + groups["Command"].Value));
             setUp();
         }
         public Buggy getBuggyForID(int ID)

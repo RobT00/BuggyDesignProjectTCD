@@ -10,7 +10,7 @@ void setup() {
   comm = new CommTrans(1);
   comm->init();
   buggy = new Buggy(comm);
-  comm->setDefaultHandler( [] { comm->writeXbee("INVALID"); });
+  comm->setDefaultHandler( [] (const String & command) { comm->writeXbee("INVALID: " + command); });
   comm->addHandler("PING", [] { comm->writeXbee("PONG"); });
   comm->addHandler("PONG", [] { comm->writeXbee("PING"); });
   comm->addHandler("LED",  [] { buggy->flashLED(); });
