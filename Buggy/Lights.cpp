@@ -1,19 +1,19 @@
 #include "Lights.h"
 
-const int16_t Lights::loopDuration = 500;
-const int16_t Lights::indicatorPeriod = 800;
-const int8_t Lights::leftIndicatorPin = 12;
-const int8_t Lights::rightIndicatorPin = 13;
-const int8_t Lights::pins[] = {5, 6, 7, 8, 9, 10, 11};
-const int8_t Lights::nPins = sizeof(Lights::pins) / sizeof(Lights::pins[0]);
+constexpr int16_t Lights::loopDuration;
+constexpr int16_t Lights::indicatorPeriod;
+constexpr int8_t Lights::leftIndicatorPin;
+constexpr int8_t Lights::rightIndicatorPin;
+constexpr int8_t Lights::nPins;
+constexpr int8_t Lights::pins[];
 
 Lights::Lights() {
-  for (auto &pin : pins) {
+  for (const auto &pin : pins) {
     pinMode(pin, OUTPUT);
-    digitalWrite(pin, LOW);
+    off(pin);
   }
-  digitalWrite(leftIndicatorPin, HIGH);
-  digitalWrite(rightIndicatorPin, HIGH);
+  on(leftIndicatorPin);
+  on(rightIndicatorPin);
 }
 
 void Lights::setMotor(const MotorControls *motor) {
@@ -27,28 +27,26 @@ void Lights::setUltrasonic(const UltraSonic *ultra) {
 void Lights::update() {
   if (motor_ && motor_->getState() == MotorState::STOPPED) {
     for (int8_t i = 0; i < nPins; i++) {
-      digitalWrite(pins[i], HIGH);
+      on(pins[i]);
     }
-    const uint8_t indicatorsOn = (ultra_ && ultra_->isBlockedByObstacle()) ? HIGH : LOW;
-    digitalWrite(leftIndicatorPin, indicatorsOn);
-    digitalWrite(rightIndicatorPin, indicatorsOn);
+    const bool obstacle = (ultra_ && ultra_->isBlockedByObstacle());
+    setLightState(leftIndicatorPin, obstacle);
+    setLightState(rightIndicatorPin, obstacle);
   } else {
     const int16_t progress = ((millis() % loopDuration) / (loopDuration / nPins)) % nPins;
+    bool pinOn;
     for (int8_t i = 0; i < nPins; i++) {
-      if (progress == i || ((progress + nPins / 2) % nPins) == i) {
-        digitalWrite(pins[i], HIGH);
-      } else {
-        digitalWrite(pins[i], LOW);
-      }
+      pinOn = (progress == i || ((progress + nPins / 2) % nPins) == i);
+      setLightState(pins[i], pinOn);
     }
     if(motor_ && motor_->getState() == MotorState::RIGHT_OVERRIDE) {
-      const uint8_t indicatorOn = ((millis() % indicatorPeriod) < indicatorPeriod / 2) ? HIGH : LOW;
-      digitalWrite(rightIndicatorPin, indicatorOn);
-      digitalWrite(leftIndicatorPin, LOW);
+      const bool indicatorOn = (millis() % indicatorPeriod) < indicatorPeriod / 2;
+      setLightState(leftIndicatorPin, indicatorOn);
+      off(rightIndicatorPin);
     } else if(motor_ && motor_->getState() == MotorState::LEFT_OVERRIDE) {
-      const uint8_t indicatorOn = ((millis() % indicatorPeriod) < indicatorPeriod / 2) ? HIGH : LOW;
-      digitalWrite(rightIndicatorPin, LOW);
-      digitalWrite(leftIndicatorPin, indicatorOn);
+      const bool indicatorOn = (millis() % indicatorPeriod) < indicatorPeriod / 2;
+      off(leftIndicatorPin);
+      setLightState(rightIndicatorPin, indicatorOn);
     }
   }
 }
