@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO.Ports;
 using System.Threading;
+using System.Text.RegularExpressions;
 
 namespace Station
 {
@@ -12,7 +13,7 @@ namespace Station
     {
         private SerialPort port = new SerialPort();
 
-        private Dictionary<string, Action<int>> buggyhash = new Dictionary<string, Action<int>>();
+        private Dictionary<Regex, Action<int, GroupCollection>> buggyhash = new Dictionary<Regex, Action<int, GroupCollection>>();
         private Action<int, string> defaultHandler = null;
 
         // Three objects required to enable using buggy IDs as indices (1 and 2)
@@ -101,14 +102,27 @@ namespace Station
                     Monitor.Pulse(receiveLocks[sender_id]);
                 }
             }
-            if (buggyhash.ContainsKey(command)) {
-                Action<int> handler = buggyhash[command];
-                Task.Run(() => handler?.Invoke(sender_id));
-            } else {
+
+            bool matched = false;
+            foreach (KeyValuePair<Regex, Action<int, GroupCollection>> pair in buggyhash)
+            {
+                Match match = pair.Key.Match(command);
+                if (match.Success) {
+                    matched = true;
+                    //Action<int> handler = buggyhash[pair.Key];
+                    Task.Run(() => pair.Value?.Invoke(sender_id, match.Groups));
+                }
+            }
+            if (!matched)
+            {
                 Task.Run(() => defaultHandler?.Invoke(sender_id, command));
             }
         }
         public void addCommand(string command, Action<int> handler)
+        {
+            addCommand(new Regex("^" + command + "$"), (int ID, GroupCollection groups) => handler(ID));
+        }
+        public void addCommand(Regex command, Action<int, GroupCollection> handler)
         {
             buggyhash.Add(command, handler);
         }
