@@ -16,7 +16,6 @@ namespace Station
         private int laps = 0;
         private Station station;
         private int requiredLaps = 0;
-        // private bool muted = false;
         private volatile bool motion = false;
         private Thread onlineThread = null;
         private volatile bool onlineThreadShouldRun = false;
@@ -42,7 +41,7 @@ namespace Station
                         bool firstTry = syn();
                         if (!firstTry)
                         {
-                            buggyAction("Back online");
+                            buggyAction("is Back Online!");
                             if (motion)
                             {
                                 go();
@@ -66,14 +65,6 @@ namespace Station
         {
             requiredLaps = laps;
         }
-        // public void mute()
-        // {
-            // muted = true;
-        // }
-        // public void unmute()
-        // {
-            // muted = false;
-        // }
         public void go()
         {
             motion = true;
@@ -97,7 +88,7 @@ namespace Station
             return comms.send(ID, "SYN", () =>
                     {
                         if (!silent)
-                            buggyAction("Offline");
+                            buggyAction("is Offline! \nWill Keep Pinging Buggy: " + ID);
                     });
         }
         public void onGantry(int gantry_num)
@@ -146,6 +137,7 @@ namespace Station
         }
         public void buggyParked()
         {
+            motion = false;
             if (direction == Direction.AntiClockwise)
             {
                 station.buggySwitch(ID);
@@ -177,13 +169,10 @@ namespace Station
         }
         private void buggyAction(String command = null)
         {
-            // if (!muted)
-            // {
-                if (command == null)
-                    Console.Write("> Buggy " + ID + ": " + command);
-                else
-                    Console.WriteLine("> Buggy " + ID + ": " + command);
-            // }
+            if (command == null)
+                Console.Write("> Buggy " + ID + ": " + command);
+            else
+                Console.WriteLine("> Buggy " + ID + ": " + command);
         }
         private void trackState(string call, int num)
         {
