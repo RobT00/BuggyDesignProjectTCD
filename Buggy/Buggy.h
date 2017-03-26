@@ -22,7 +22,7 @@ class Buggy {
     const unsigned int parking_stopAt = 7000;
 
     const CommTrans *comms;
-    MotorControls motor;
+    MotorControls *motor;
 
     bool going = false;
     Direction travelDirection;
@@ -44,10 +44,10 @@ class Buggy {
     static const short LED_PIN = 13;
   
     Buggy() = delete;
-    Buggy(short ID, CommTrans *c) : comms(c) {
+    Buggy(short ID, MotorControls *m, CommTrans *c) : motor(m), comms(c) {
       pinMode(LED_PIN, OUTPUT);
       pinMode(IR_PIN, INPUT);
-      motor.stop();
+      motor->stop();
       if (ID == 1) {
         travelDirection = CLOCKWISE;
       } else {
