@@ -56,7 +56,8 @@ namespace Station
                             if (offlineHandler != null)
                             {
                                 offlineHandler();
-                            } else
+                            }
+                            else
                             {
                                 Program.print("Command: " + command + "\nnot being recieved by buggy: " + buggy_id +
                                 "\nWill keep sending command");
@@ -109,7 +110,6 @@ namespace Station
                 Match match = pair.Key.Match(command);
                 if (match.Success) {
                     matched = true;
-                    //Action<int> handler = buggyhash[pair.Key];
                     Task.Run(() => pair.Value?.Invoke(sender_id, match.Groups));
                 }
             }

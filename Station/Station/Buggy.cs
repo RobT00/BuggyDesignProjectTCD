@@ -97,6 +97,7 @@ namespace Station
                         if (!silent)
                             buggyAction("is Offline! \nWill keep pinging buggy " + ID);
                     });
+            return true;
         }
         public void onGantry(int gantry_num)
         {

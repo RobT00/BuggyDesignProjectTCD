@@ -21,51 +21,67 @@ namespace Station
             while (true)
             {
                 string input = readInput();
+                clearInput();
+                Console.CursorLeft = 0;
                 if (input == "EXIT")
                     Environment.Exit(0);
                 if (input == "RESET")
                 {
-                    clearInput();
-                    Console.CursorLeft = 0;
                     station.setUp();
+                    noRePrint();
                 }
-                if (input.Length < 3)
+                else
                 {
-                    print("Station: Message too short");
-                    continue;
-                }
-                if (!Char.IsDigit(input[0]))
-                {
-                    print("Station: Start message with reciever ID");
-                    continue;
-                }
-                int ID = input[0] - '0';
-                if (station.getBuggyForID(ID) == null)
-                {
-                    print("Station: No buggy with given ID");
-                }
-                string command = input.Substring(2);
-                switch (command)
-                {
-                    case "PING":
-                        station.getBuggyForID(ID)?.sendPing();
-                        break;
-                    case "PONG":
-                        station.getBuggyForID(ID)?.sendPong();
-                        break;
-                    case "GO":
-                        station.getBuggyForID(ID)?.go();
-                        break;
-                    case "STOP":
-                        station.getBuggyForID(ID)?.stop();
-                        break;
-                    case "PARK":
-                        station.getBuggyForID(ID)?.goPark();
-                        break;
+                    if (input.Length < 3)
+                    {
+                        print("Station: Message too short");
+                        noRePrint();
+                        continue;
+                    }
+                    if (!Char.IsDigit(input[0]))
+                    {
+                        print("Station: Start message with reciever ID");
+                        noRePrint();
+                        continue;
+                    }
+                    int ID = input[0] - '0';
+                    if (station.getBuggyForID(ID) == null)
+                    {
+                        print("Station: No buggy with given ID");
+                        noRePrint();
+                    }
+                    string command = input.Substring(2);
+                    if (!possibleCommand(station, command, ID))
+                    {
+                        print("Station: No such command");
+                        noRePrint();
+                    }
                 }
             }
         }
-
+        
+        private static bool possibleCommand(Station station, string command, int ID)
+        {
+            switch (command)
+            {
+                case "PING":
+                    station.getBuggyForID(ID)?.sendPing();
+                    return true;
+                case "PONG":
+                    station.getBuggyForID(ID)?.sendPong();
+                    return true;
+                case "GO":
+                    station.getBuggyForID(ID)?.go();
+                    return true;
+                case "STOP":
+                    station.getBuggyForID(ID)?.stop();
+                    return true;
+                case "PARK":
+                    station.getBuggyForID(ID)?.goPark();
+                    return true;
+            }
+            return false;
+        }
         private static void printInput()
         {
             clearInput();
@@ -101,7 +117,7 @@ namespace Station
             inputBuffer.Add("");
             inputBufferIndex = inputBuffer.Count - 1;
             printInput();
-            while(true)
+            while (true)
             {
                 ConsoleKeyInfo key = Console.ReadKey(true);
                 clearInput();
@@ -167,6 +183,11 @@ namespace Station
                 printInput();
                 Console.BackgroundColor = emptyColour;
             }
+        }
+        private static void noRePrint()
+        {
+            clearInput();
+            Console.CursorLeft = 0;
         }
     }
 }
