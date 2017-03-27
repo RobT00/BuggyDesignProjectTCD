@@ -21,66 +21,64 @@ namespace Station
             while (true)
             {
                 string input = readInput();
-                clearInput();
-                Console.CursorLeft = 0;
+
                 if (input == "EXIT")
                     Environment.Exit(0);
                 if (input == "RESET")
                 {
                     station.setUp();
-                    noRePrint();
+                    continue;
                 }
-                else
+
+                if (input.Length < 3)
                 {
-                    if (input.Length < 3)
-                    {
-                        print("Station: Message too short");
-                        noRePrint();
-                        continue;
-                    }
-                    if (!Char.IsDigit(input[0]))
-                    {
-                        print("Station: Start message with reciever ID");
-                        noRePrint();
-                        continue;
-                    }
-                    int ID = input[0] - '0';
-                    if (station.getBuggyForID(ID) == null)
-                    {
-                        print("Station: No buggy with given ID");
-                        noRePrint();
-                    }
-                    string command = input.Substring(2);
-                    if (!possibleCommand(station, command, ID))
-                    {
-                        print("Station: No such command");
-                        noRePrint();
-                    }
+                    print("Station: Message too short");
+                    continue;
+                }
+                if (!Char.IsDigit(input[0]))
+                {
+                    print("Station: Start message with reciever ID");
+                    continue;
+                }
+
+                int ID = input[0] - '0';
+                if (station.getBuggyForID(ID) == null)
+                {
+                    print("Station: No buggy with given ID");
+                }
+
+                string command = input.Substring(2);
+                if (!executeCommand(station, command, ID))
+                {
+                    print("Station: No such command");
                 }
             }
         }
-        
-        private static bool possibleCommand(Station station, string command, int ID)
+
+        private static bool executeCommand(Station station, string command, int ID)
         {
             switch (command)
             {
                 case "PING":
                     station.getBuggyForID(ID)?.sendPing();
-                    return true;
+                    break;
                 case "PONG":
                     station.getBuggyForID(ID)?.sendPong();
-                    return true;
+                    break;
                 case "GO":
                     station.getBuggyForID(ID)?.go();
-                    return true;
+                    break;
                 case "STOP":
                     station.getBuggyForID(ID)?.stop();
-                    return true;
+                    break;
                 case "PARK":
                     station.getBuggyForID(ID)?.goPark();
-                    return true;
+                    break;
+
+                default:
+                    return false;
             }
-            return false;
+            return true;
         }
         private static void printInput()
         {
@@ -96,8 +94,9 @@ namespace Station
             }
         }
 
-        /// Clear line with black, so the current input is cleared if printed
-        /// message is shorter
+        /// <summary>
+        /// Clear line with black, so the current input is cleared if printed message is shorter
+        /// </summary>
         private static void clearInput()
         {
             lock (printLock)
@@ -109,11 +108,14 @@ namespace Station
                     length += inputBuffer[inputBufferIndex].Length;
                 for (int i = 0; i < length; i++)
                     Console.Write(" ");
+                Console.CursorLeft = 0;
             }
         }
 
         private static string readInput()
         {
+            clearInput();
+
             inputBuffer.Add("");
             inputBufferIndex = inputBuffer.Count - 1;
             printInput();
@@ -128,10 +130,12 @@ namespace Station
                 if (key.Key == ConsoleKey.UpArrow)
                 {
                     inputBufferIndex = Math.Max(0, inputBufferIndex - 1);
-                } else if (key.Key == ConsoleKey.DownArrow)
+                }
+                else if (key.Key == ConsoleKey.DownArrow)
                 {
                     inputBufferIndex = Math.Min(inputBuffer.Count - 1, inputBufferIndex + 1);
-                } else
+                }
+                else
                 {
                     // Change last, not index
                     if (inputBufferIndex != inputBuffer.Count - 1) {
@@ -139,33 +143,30 @@ namespace Station
                         inputBufferIndex = inputBuffer.Count - 1;
                     }
 
-                    if (key.Key == ConsoleKey.Enter &&
-                            inputBuffer.Last().Length != 0)
+                    // Separate inner if statement necessary so that 'Enter' and 'Backspace' keys are never handled by the last branch
+                    if (key.Key == ConsoleKey.Enter)
                     {
-                        print(inputBuffer.Last(), inputColour);
-                        break;
-                    } else if (key.Key == ConsoleKey.Backspace)
+                        if (inputBuffer.Last().Length != 0)
+                        {
+                            print(inputBuffer.Last(), inputColour);
+                            break;
+                        }
+                    }
+                    else if (key.Key == ConsoleKey.Backspace)
                     {
                         if (inputBuffer.Last().Length != 0) {
-                            // Clear background
-                            lock (printLock)
-                            {
-                                Console.BackgroundColor = emptyColour;
-                                Console.CursorLeft--;
-                                Console.Write(" ");
-                                Console.CursorLeft--;
-                            }
-
                             inputBuffer[inputBuffer.Count - 1] = inputBuffer.Last().Substring(0, inputBuffer.Last().Length - 1);
                         }
-                        
-                    } else if (key.KeyChar != '\u0000')
+                    }
+                    else if (key.KeyChar != '\u0000')
                     {
                         inputBuffer[inputBuffer.Count - 1] += key.KeyChar;
                     }
                 }
                 printInput();
             }
+
+            clearInput();
             return inputBuffer.Last();
         }
         public static void print(string message)
@@ -183,11 +184,6 @@ namespace Station
                 printInput();
                 Console.BackgroundColor = emptyColour;
             }
-        }
-        private static void noRePrint()
-        {
-            clearInput();
-            Console.CursorLeft = 0;
         }
     }
 }

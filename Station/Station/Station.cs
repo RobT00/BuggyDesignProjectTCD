@@ -29,18 +29,20 @@ namespace Station
             comms.addCommand("OBSTACLE", (int ID) => getBuggyForID(ID)?.obstacle("OBSTACLE"));
             comms.addCommand("PATHCLEAR", (int ID) => getBuggyForID(ID)?.obstacle("PATHCLEAR"));
             comms.addCommand(new Regex(@"^IRLength: (?<Length>\d+)$"), (int ID, GroupCollection groups) => Program.print("Buggy " + ID + " Pulse length: " + groups["Length"].Value));
-            comms.addCommand(new Regex(@"^INVALID: (?<Command>.*)$"), (int ID, GroupCollection groups) => Program.print("Buggy " + ID + "received invalid command: " + groups["Command"].Value));
+            comms.addCommand(new Regex(@"^INVALID: (?<Command>.*)$"), (int ID, GroupCollection groups) => Program.print("Buggy " + ID + " received invalid command: " + groups["Command"].Value));
             setUp();
         }
         public Buggy getBuggyForID(int ID)
         {
-            if (ID == 1)
+            switch (ID)
             {
-                return buggy1;
+                case 1:
+                    return buggy1;
+                case 2:
+                    return buggy2;
+                default:
+                    return null;
             }
-            if (ID == 2)
-                return buggy2;
-            return null;
         }
 
         public void defaultCommandHandler(int ID, string command)
@@ -56,7 +58,7 @@ namespace Station
             else
                 Program.print("Something goofed...", ConsoleColor.Magenta);
         }
-        public void setNumberOfLabs(int laps)
+        public void setNumberOfLaps(int laps)
         {
             if (getNumberOfBuggies() == 1)
                 buggy1.setRequiredLaps(laps);
@@ -107,7 +109,7 @@ namespace Station
             else
                 buggy2 = null;
             setNumberOfBuggies(buggies);
-            setNumberOfLabs(laps);
+            setNumberOfLaps(laps);
         }
     }
 }

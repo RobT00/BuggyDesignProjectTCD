@@ -41,7 +41,7 @@ namespace Station
                         bool firstTry = syn();
                         if (!firstTry)
                         {
-                            buggyAction("is Back Online!");
+                            buggyAction("is back online!");
                             if (motion)
                             {
                                 go();
