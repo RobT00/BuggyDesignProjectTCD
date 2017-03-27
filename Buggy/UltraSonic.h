@@ -10,7 +10,7 @@ class UltraSonic {
   Buggy* buggy;
   const CommTrans* comms;
 
-  const unsigned short groundPin = 16;
+  const unsigned short groundPin = 15;
   const unsigned short powerPin = 17;
   const unsigned short ultraPin = 18;
   const unsigned long tresholdDistance = 16; // cm
