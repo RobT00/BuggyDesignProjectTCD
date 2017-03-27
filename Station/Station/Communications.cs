@@ -5,17 +5,26 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO.Ports;
 using System.Threading;
+using System.Text.RegularExpressions;
 
 namespace Station
 {
     class Communications
     {
-        private Dictionary<string, Action<int>> buggyhash = new Dictionary<string, Action<int>>();
-        private Action<int, string> defaultHandler = null;
         private SerialPort port = new SerialPort();
+
+        private Dictionary<Regex, Action<int, GroupCollection>> buggyhash = new Dictionary<Regex, Action<int, GroupCollection>>();
+        private Action<int, string> defaultHandler = null;
+
+        // Three objects required to enable using buggy IDs as indices (1 and 2)
+        private object[] sendLocks = { new object(), new object(), new object() };
+        private object[] receiveLocks = { new object(), new object(), new object() };
+        private bool[] received = { false, false, false };
+        private object portLock = new object();
+
         public Communications()
         {
-            port.PortName = "COM4";
+            port.PortName = "COM13";
             port.BaudRate = 9600;
             port.Open();
 
@@ -26,11 +35,51 @@ namespace Station
 
             port.DiscardInBuffer();
             port.DataReceived += recievedData;
+
+            addCommand("ACK", (int ID) => { });
         }
-        public void send(int buggy_id, string command)
+        public bool send(int buggy_id, string command, Action offlineHandler = null)
         {
+            int reps = 0;
             int sender_id = 0;
-            port.Write(sender_id + " " + buggy_id + " " + command + "\n");
+            lock (sendLocks[buggy_id])
+            {
+                lock (receiveLocks[buggy_id])
+                {
+                    received[buggy_id] = false;
+                    while (!received[buggy_id])
+                    {
+                        reps++;
+
+                        if (reps == 3 && !received[buggy_id])
+                        {
+                            if (offlineHandler != null)
+                            {
+                                offlineHandler();
+                            }
+                            else
+                            {
+                                Program.print("Command " + command + " not being recieved by buggy " + buggy_id);
+                                Program.print("Will keep sending command");
+                            }
+                        }
+                        lock (portLock)
+                        {
+                            port.Write(sender_id + " " + buggy_id + " " + command + "\n");
+                        }
+                        Monitor.Wait(receiveLocks[buggy_id], 200);
+                    }
+                }
+            }
+            if (reps > 2)
+            {
+                if (offlineHandler == null)
+                {
+                    Program.print(" Command " + command + " received after " + reps + " attempts");
+                }
+                return false;
+            }
+            return true;
         }
         public void recievedData(object sender, SerialDataReceivedEventArgs e)
         {
@@ -45,15 +94,35 @@ namespace Station
                 return;
             if (sender_id != 1 && sender_id != 2)
                 return;
-            if (!buggyhash.ContainsKey(command))
-                defaultHandler?.Invoke(sender_id, command);
-            else
+
+            if (command == "ACK")
             {
-                Console.WriteLine("> Buggy" + sender_id + ": " + command);
-                buggyhash[command](sender_id);
+                lock (receiveLocks[sender_id])
+                {
+                    received[sender_id] = true;
+                    Monitor.Pulse(receiveLocks[sender_id]);
+                }
+            }
+
+            bool matched = false;
+            foreach (KeyValuePair<Regex, Action<int, GroupCollection>> pair in buggyhash)
+            {
+                Match match = pair.Key.Match(command);
+                if (match.Success) {
+                    matched = true;
+                    Task.Run(() => pair.Value?.Invoke(sender_id, match.Groups));
+                }
+            }
+            if (!matched)
+            {
+                Task.Run(() => defaultHandler?.Invoke(sender_id, command));
             }
         }
         public void addCommand(string command, Action<int> handler)
+        {
+            addCommand(new Regex("^" + command + "$"), (int ID, GroupCollection groups) => handler(ID));
+        }
+        public void addCommand(Regex command, Action<int, GroupCollection> handler)
         {
             buggyhash.Add(command, handler);
         }

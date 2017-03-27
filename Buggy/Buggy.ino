@@ -18,13 +18,13 @@ void setup() {
   comm = new CommTrans(buggyID);
   comm->init();
   buggy = new Buggy(buggyID, motors, comm);
-  comm->setDefaultHandler(   [] { comm->writeXbee("INVALID"); });
-  comm->addHandler("PING",   [] { comm->writeXbee("PONG"); });
-  comm->addHandler("PONG",   [] { comm->writeXbee("PING"); });
-  comm->addHandler("SYN",    [] { });
-  comm->addHandler("GO",     [] { buggy->go(); });
-  comm->addHandler("STOP",   [] { buggy->stop(); });
-  comm->addHandler("PARK",   [] { buggy->park(); });
+  comm->setDefaultHandler( [] (const String & command) { comm->writeXbee("INVALID: " + command); });
+  comm->addHandler("PING", [] { comm->writeXbee("PONG"); });
+  comm->addHandler("PONG", [] { comm->writeXbee("PING"); });
+  comm->addHandler("SYN",  [] { });
+  comm->addHandler("GO",   [] { buggy->go(); });
+  comm->addHandler("STOP", [] { buggy->stop(); });
+  comm->addHandler("PARK", [] { buggy->park(); });
 
   attachInterrupt(digitalPinToInterrupt(Buggy::IR_PIN), IR_ISR, RISING);
 

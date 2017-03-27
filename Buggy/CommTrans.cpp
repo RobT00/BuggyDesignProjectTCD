@@ -37,13 +37,12 @@ void CommTrans::processCommand(char c) {
   if (command != "ACK") {
     writeXbee("ACK");
   }
-  // writeXbee(String("Recieved command: ") + command);
 
   VoidFunction f = handlers.get(command);
   if (f != NULL) {
     f();
   } else if (defaultHandler != NULL) {
-    defaultHandler();
+    defaultHandler(command);
   }
 }
 
@@ -60,6 +59,6 @@ void CommTrans::addHandler(String command, VoidFunction handler) {
   handlers.add(command, handler);
 }
 
-void CommTrans::setDefaultHandler(VoidFunction handler) {
+void CommTrans::setDefaultHandler(StringVoidFunction handler) {
   defaultHandler = handler;
 }
