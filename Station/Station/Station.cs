@@ -26,21 +26,23 @@ namespace Station
             comms.addCommand(new Regex(@"^GANTRY(?<GantryID>[123])$"), (int ID, GroupCollection groups) => getBuggyForID(ID)?.onGantry(Int32.Parse(groups["GantryID"].Value)));
             comms.addCommand("GANTRY_INVALID", (int ID) => getBuggyForID(ID)?.onGantry(-10));
             comms.addCommand("PARKED", (int ID) => getBuggyForID(ID)?.buggyParked());
-            comms.addCommand("OBSTACLE", (int ID) => getBuggyForID(ID)?.stopped()); //may make new function to state the obstacle caused stop
-            comms.addCommand("PATHCLEAR", (int ID) => getBuggyForID(ID)?.going()); //same as above
-            comms.addCommand(new Regex(@"^IRLength: (?<Length>\d+)$"), (int ID, GroupCollection groups) => Console.WriteLine("Buggy " + ID + " Pulse length: " + groups["Length"].Value));
-            comms.addCommand(new Regex(@"^INVALID: (?<Command>.*)$"), (int ID, GroupCollection groups) => Console.WriteLine("Buggy " + ID + "received invalid command: " + groups["Command"].Value));
+            comms.addCommand("OBSTACLE", (int ID) => getBuggyForID(ID)?.obstacle("OBSTACLE"));
+            comms.addCommand("PATHCLEAR", (int ID) => getBuggyForID(ID)?.obstacle("PATHCLEAR"));
+            comms.addCommand(new Regex(@"^IRLength: (?<Length>\d+)$"), (int ID, GroupCollection groups) => Program.print("Buggy " + ID + " Pulse length: " + groups["Length"].Value));
+            comms.addCommand(new Regex(@"^INVALID: (?<Command>.*)$"), (int ID, GroupCollection groups) => Program.print("Buggy " + ID + " received invalid command: " + groups["Command"].Value));
             setUp();
         }
         public Buggy getBuggyForID(int ID)
         {
-            if (ID == 1)
+            switch (ID)
             {
-                return buggy1;
+                case 1:
+                    return buggy1;
+                case 2:
+                    return buggy2;
+                default:
+                    return null;
             }
-            if (ID == 2)
-                return buggy2;
-            return null;
         }
 
         public void defaultCommandHandler(int ID, string command)
@@ -54,9 +56,9 @@ namespace Station
             else if (ID == 2)
                 getBuggyForID(1)?.go();
             else
-                Console.WriteLine("Something goofed...");
+                Program.print("Something goofed...", ConsoleColor.Magenta);
         }
-        public void setNumberOfLabs(int laps)
+        public void setNumberOfLaps(int laps)
         {
             if (getNumberOfBuggies() == 1)
                 buggy1.setRequiredLaps(laps);
@@ -95,19 +97,19 @@ namespace Station
             }
             buggy1 = new Buggy(1, Direction.Clockwise, this, comms);
             buggy1.syn(silent: true);
-            Console.WriteLine("Buggy 1 OK");
+            Program.print("Buggy 1 OK", buggy1.getColour());
             buggy1.startOnlineCheck();
             if (buggies == 2)
             {
                 buggy2 = new Buggy(2, Direction.AntiClockwise, this, comms);
                 buggy2.syn(silent: true);
-                Console.WriteLine("Buggy 2 OK");
+                Program.print("Buggy 2 OK", buggy2.getColour());
                 buggy2.startOnlineCheck();
             }
             else
                 buggy2 = null;
             setNumberOfBuggies(buggies);
-            setNumberOfLabs(laps);
+            setNumberOfLaps(laps);
         }
     }
 }

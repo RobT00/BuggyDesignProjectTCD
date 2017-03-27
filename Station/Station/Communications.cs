@@ -24,7 +24,7 @@ namespace Station
 
         public Communications()
         {
-            port.PortName = "COM15";
+            port.PortName = "COM13";
             port.BaudRate = 9600;
             port.Open();
 
@@ -56,10 +56,11 @@ namespace Station
                             if (offlineHandler != null)
                             {
                                 offlineHandler();
-                            } else
+                            }
+                            else
                             {
-                                Console.WriteLine("Command: " + command + "\nnot being recieved by buggy: " + buggy_id +
-                                "\nWill keep sending command");
+                                Program.print("Command " + command + " not being recieved by buggy " + buggy_id);
+                                Program.print("Will keep sending command");
                             }
                         }
                         lock (portLock)
@@ -74,7 +75,7 @@ namespace Station
             {
                 if (offlineHandler == null)
                 {
-                    Console.WriteLine(" Command: " + command + " received after " + reps + " attempts");
+                    Program.print(" Command " + command + " received after " + reps + " attempts");
                 }
                 return false;
             }
@@ -109,7 +110,6 @@ namespace Station
                 Match match = pair.Key.Match(command);
                 if (match.Success) {
                     matched = true;
-                    //Action<int> handler = buggyhash[pair.Key];
                     Task.Run(() => pair.Value?.Invoke(sender_id, match.Groups));
                 }
             }
