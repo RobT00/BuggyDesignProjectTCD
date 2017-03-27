@@ -4,7 +4,7 @@ void Buggy::go(bool silent) {
   if (going) {
     return;
   }
-  motor.go();
+  motor->go();
   lastGoTime = millis();
   if (!silent) {
     comms->writeXbee("GOING");
@@ -16,7 +16,7 @@ void Buggy::stop(bool silent) {
   if (!going) {
     return;
   }
-  motor.stop();
+  motor->stop();
   travelledTime += millis() - lastGoTime;
   if (!silent) {
     comms->writeXbee("STOPPED");
@@ -102,16 +102,16 @@ void Buggy::updateParking() {
   }
 
   if (parkingState == BEFORE_INTERSECTION) {
-    if (travelDirection == CLOCKWISE && motor.getState() != LEFT_OVERRIDE) {
-      motor.leftOverride();
-    } else if (travelDirection == ANTI_CLOCKWISE && motor.getState() != RIGHT_OVERRIDE) {
-      motor.rightOverride();
+    if (travelDirection == CLOCKWISE && motor->getState() != LEFT_OVERRIDE) {
+      motor->leftOverride();
+    } else if (travelDirection == ANTI_CLOCKWISE && motor->getState() != RIGHT_OVERRIDE) {
+      motor->rightOverride();
     }
   }
 
   unsigned long sinceGantry = timeTravelledSinceGantry();
   if (parkingState == BEFORE_INTERSECTION && sinceGantry > parking_overrideOffAt) {
-    motor.go();
+    motor->go();
     parkingState = AFTER_INTERSECTION;
   } else if (parkingState == AFTER_INTERSECTION && sinceGantry > parking_stopAt) {
     stop(true);
