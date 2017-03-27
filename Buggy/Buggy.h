@@ -18,14 +18,14 @@ class Buggy {
       AFTER_INTERSECTION
     };
     ParkingState parkingState = NOT_PARKING;
-    const unsigned int parking_overrideOffAt = 4000;
-    const unsigned int parking_stopAt = 10000;
+    const unsigned int parking_overrideOffAt = 3000;
+    const unsigned int parking_stopAt = 7000;
 
     const CommTrans *comms;
-    MotorControls motor;
+    MotorControls *motor;
 
     bool going = false;
-    Direction travelDirection = CLOCKWISE;
+    Direction travelDirection;
     unsigned long travelledTime = 0l;
     unsigned long lastGoTime = 0l;
  
@@ -44,16 +44,24 @@ class Buggy {
     static const short LED_PIN = 13;
   
     Buggy() = delete;
-    Buggy(CommTrans *c) : comms(c) {
+    Buggy(short ID, MotorControls *m, CommTrans *c) : motor(m), comms(c) {
       pinMode(LED_PIN, OUTPUT);
       pinMode(IR_PIN, INPUT);
-      motor.stop();
-    };
+      motor->stop();
+      if (ID == 1) {
+        travelDirection = CLOCKWISE;
+      } else {
+        travelDirection = ANTI_CLOCKWISE;
+      }
+    }
 
     void go(bool silent = false);
     void stop(bool silent = false);
     void park();
     bool isGoing() const;
+
+    Direction getDirection() const { return travelDirection; }
+    void setDirection(Direction d) { travelDirection = d; }
 
     void flashLED() const;
 

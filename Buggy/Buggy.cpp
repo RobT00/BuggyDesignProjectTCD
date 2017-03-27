@@ -4,7 +4,7 @@ void Buggy::go(bool silent) {
   if (going) {
     return;
   }
-  motor.go();
+  motor->go();
   lastGoTime = millis();
   if (!silent) {
     comms->writeXbee("GOING");
@@ -16,7 +16,7 @@ void Buggy::stop(bool silent) {
   if (!going) {
     return;
   }
-  motor.stop();
+  motor->stop();
   travelledTime += millis() - lastGoTime;
   if (!silent) {
     comms->writeXbee("STOPPED");
@@ -60,9 +60,6 @@ void Buggy::detectGantry() {
     } else {
       comms->writeXbee("GANTRY" + String(gantry));
       atGantryAt = getTravelledTime();
-      // stop()
-      // delay(1000);
-      // go();
       underGantry = true;
       irInterrupt = false;
     }
@@ -71,11 +68,12 @@ void Buggy::detectGantry() {
 
 int Buggy::readGantry() const {
   while (digitalRead(IR_PIN) == HIGH) {}
+  short count = 2;
   int sum = 0;
-  for (short i = 0; i < 4; i++) {
+  for (short i = 0; i < count; i++) {
     sum += pulseIn(IR_PIN, HIGH);
   }
-  int pulse = sum / 4;
+  int pulse = sum / count;
 
   comms->writeXbee(String("IRLength: ") + pulse);
   if (pulse >= 500 && pulse <= 1500) {
@@ -104,16 +102,16 @@ void Buggy::updateParking() {
   }
 
   if (parkingState == BEFORE_INTERSECTION) {
-    if (travelDirection == CLOCKWISE && motor.getState() != LEFT_OVERRIDE) {
-      motor.leftOverride();
-    } else if (travelDirection == ANTI_CLOCKWISE && motor.getState() != RIGHT_OVERRIDE) {
-      motor.rightOverride();
+    if (travelDirection == CLOCKWISE && motor->getState() != LEFT_OVERRIDE) {
+      motor->leftOverride();
+    } else if (travelDirection == ANTI_CLOCKWISE && motor->getState() != RIGHT_OVERRIDE) {
+      motor->rightOverride();
     }
   }
 
   unsigned long sinceGantry = timeTravelledSinceGantry();
   if (parkingState == BEFORE_INTERSECTION && sinceGantry > parking_overrideOffAt) {
-    motor.go();
+    motor->go();
     parkingState = AFTER_INTERSECTION;
   } else if (parkingState == AFTER_INTERSECTION && sinceGantry > parking_stopAt) {
     stop(true);

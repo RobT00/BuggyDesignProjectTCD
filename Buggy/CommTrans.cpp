@@ -34,6 +34,9 @@ void CommTrans::processCommand(char c) {
   if (reci_ID != my_ID) {
     return;
   }
+  if (command != "ACK") {
+    writeXbee("ACK");
+  }
 
   VoidFunction f = handlers.get(command);
   if (f != NULL) {
