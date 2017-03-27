@@ -33,5 +33,5 @@ class UltraSonic {
 
   void ultraLoop();
 
-  bool isBlockedByObstacle() { return obstacle; }
+  bool isBlockedByObstacle() const { return obstacle; }
 };
