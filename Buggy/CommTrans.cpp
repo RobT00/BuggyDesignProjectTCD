@@ -13,11 +13,13 @@ void CommTrans::writeXbee(String command) const {
 }
 
 void CommTrans::processCommand(char c) {
+  // If command not finished, simply add `c` to the input buffer
   if (c != '\n') {
     message += c;
     return;
   }
 
+  // Extract IDs and command and filter
   if (message.length() < 5) {
     message = "";
     return;
@@ -34,10 +36,13 @@ void CommTrans::processCommand(char c) {
   if (reci_ID != my_ID) {
     return;
   }
+
+  // Acknowledge the recept of the command
   if (command != "ACK") {
     writeXbee("ACK");
   }
 
+  // Execute command handler, or the default handler if none exist
   VoidFunction f = handlers.get(command);
   if (f != NULL) {
     f();
@@ -51,8 +56,8 @@ void CommTrans::init() const {
   Serial.print("+++");
   delay(1500);
   Serial.println("ATID 3308, CH C, CN");
-  delay(11000);
-  while (Serial.read() != -1) {}
+  delay(11000); // Wait for AT mode to exit
+  while (Serial.read() != -1) {} // Discard OKs
 }
 
 void CommTrans::addHandler(String command, VoidFunction handler) {

@@ -10,47 +10,49 @@
 using namespace std;
 
 class Integer {
-    private:
-        mutable int i;
+  private:
+    int i;
 
-    public:
-        Integer(int initial) : i(initial) {}
-        Integer() : Integer(0) {};
-        int get() const { return i; }
-        void increment() const { i++; }
+  public:
+    Integer(int initial) : i(initial) {}
+    Integer() : Integer(0) {};
+    int get() const { return i; }
+    void increment() { i++; }
 };
 
-static const Integer handlerResult;
+static Integer * const handlerResult = new Integer();
 
+/**
+ * Ensures that the hash function produces no collisions for the commands used
+ * in the project
+ */
 int main() {
-    const vector<const char*> commands = {
-        "PING",
-        "PONG",
-        "LED",
-        "CLOCK",
-        "ACLOCK",
-        "GO",
-        "STOP",
-        "STRAIGHT",
-        "PARK"
-    };
+  const vector<const char*> commands = {
+    "PING",
+    "PONG",
+    "SYN",
+    "GO",
+    "STOP",
+    "STRAIGHT",
+    "PARK"
+  };
 
-    HashMap map;
-    for (unsigned int i = 0; i < commands.size(); i++) {
-        map.add(commands[i], [] { handlerResult.increment(); });
-    }
+  HashMap map;
+  for (unsigned int i = 0; i < commands.size(); i++) {
+    map.add(commands[i], [] { handlerResult->increment(); });
+  }
 
-    assert(map.size() == commands.size());
+  assert(map.size() == commands.size());
 
-    for (unsigned int i = 0; i < commands.size(); i++) {
-        VoidFunction f = map.get(commands[i]);
-        assert(f != nullptr);
-        f();
-        assert(handlerResult.get() == i + 1);
-    }
+  for (unsigned int i = 0; i < commands.size(); i++) {
+    VoidFunction f = map.get(commands[i]);
+    assert(f != nullptr);
+    f();
+    assert(handlerResult->get() == i + 1);
+  }
 
-    cout << "Tests passed" << endl;
+  cout << "Tests passed" << endl;
 
-    return 0;
+  return 0;
 }
 #endif

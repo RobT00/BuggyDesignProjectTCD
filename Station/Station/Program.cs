@@ -8,9 +8,21 @@ namespace Station
 {
     class Program
     {
+        /// <summary>
+        /// Only one thread can print at a time
+        /// This can prevent potential interleaving output from different threads and buggies
+        /// </summary>
         private static object printLock = new Object();
+        /// <summary>
+        /// Stores the input history
+        /// <c>inputBuffer.Last()</c> is the currently edited command
+        /// </summary>
         private static List<string> inputBuffer = new List<string>();
+        /// <summary>
+        /// The index of the currently viewed command in <c>inputBuffer</c>
+        /// </summary>
         private static int inputBufferIndex = -1;
+
         private static ConsoleColor inputColour = ConsoleColor.DarkGreen;
         private static ConsoleColor emptyColour = ConsoleColor.Black;
 
@@ -55,24 +67,31 @@ namespace Station
             }
         }
 
-        private static bool executeCommand(Station station, string command, int ID)
+        /// <summary>
+        /// Executes the action associated with the command
+        /// </summary>
+        /// <returns>
+        /// True if execution successful.
+        /// False if command not found
+        /// </returns>
+        private static bool executeCommand(Station station, string command, int buggyID)
         {
             switch (command)
             {
                 case "PING":
-                    station.getBuggyForID(ID)?.sendPing();
+                    station.getBuggyForID(buggyID)?.sendPing();
                     break;
                 case "PONG":
-                    station.getBuggyForID(ID)?.sendPong();
+                    station.getBuggyForID(buggyID)?.sendPong();
                     break;
                 case "GO":
-                    station.getBuggyForID(ID)?.go();
+                    station.getBuggyForID(buggyID)?.go();
                     break;
                 case "STOP":
-                    station.getBuggyForID(ID)?.stop();
+                    station.getBuggyForID(buggyID)?.stop();
                     break;
                 case "PARK":
-                    station.getBuggyForID(ID)?.goPark();
+                    station.getBuggyForID(buggyID)?.goPark();
                     break;
 
                 default:
@@ -80,6 +99,10 @@ namespace Station
             }
             return true;
         }
+
+        /// <summary>
+        /// Print current input buffer
+        /// </summary>
         private static void printInput()
         {
             clearInput();
@@ -95,7 +118,7 @@ namespace Station
         }
 
         /// <summary>
-        /// Clear line with black, so the current input is cleared if printed message is shorter
+        /// Clear current line with black up to the length of the input buffer
         /// </summary>
         private static void clearInput()
         {
@@ -112,6 +135,10 @@ namespace Station
             }
         }
 
+        /// <summary>
+        /// Read a line from the Console, maintaining an input history and printing buffer in colour
+        /// </summary>
+        /// <returns>The line read</returns>
         private static string readInput()
         {
             clearInput();
@@ -123,10 +150,12 @@ namespace Station
             {
                 ConsoleKeyInfo key = Console.ReadKey(true);
                 clearInput();
+                // Discard modifier key presses with modifier keys
                 if ((key.Modifiers & ConsoleModifiers.Alt) == ConsoleModifiers.Alt)
                     continue;
                 if ((key.Modifiers & ConsoleModifiers.Control) == ConsoleModifiers.Control)
                     continue;
+                // Navigate input history
                 if (key.Key == ConsoleKey.UpArrow)
                 {
                     inputBufferIndex = Math.Max(0, inputBufferIndex - 1);
@@ -135,9 +164,10 @@ namespace Station
                 {
                     inputBufferIndex = Math.Min(inputBuffer.Count - 1, inputBufferIndex + 1);
                 }
+                // Edit current buffer
                 else
                 {
-                    // Change last, not index
+                    // If trying to use a command from the command history, make that the current command
                     if (inputBufferIndex != inputBuffer.Count - 1) {
                         inputBuffer[inputBuffer.Count - 1] = inputBuffer[inputBufferIndex];
                         inputBufferIndex = inputBuffer.Count - 1;
@@ -163,23 +193,33 @@ namespace Station
                         inputBuffer[inputBuffer.Count - 1] += key.KeyChar;
                     }
                 }
+
                 printInput();
             }
 
             clearInput();
             return inputBuffer.Last();
         }
+
+        /// <summary>
+        /// Prints <c>message</c> with a black background
+        /// Adds newline and redraws the input buffer
+        /// </summary>
         public static void print(string message)
         {
             print(message, emptyColour);
         }
-        public static void print(string message, ConsoleColor backgroundColor)
+        /// <summary>
+        /// Prints <c>message</c> with the specified background colour.
+        /// Adds newline and redraws the input buffer
+        /// </summary>
+        public static void print(string message, ConsoleColor? backgroundColor)
         {
             lock (printLock)
             {
                 clearInput();
                 Console.CursorLeft = 0;
-                Console.BackgroundColor = backgroundColor;
+                Console.BackgroundColor = backgroundColor ?? emptyColour;
                 Console.WriteLine(message);
                 printInput();
                 Console.BackgroundColor = emptyColour;

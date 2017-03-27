@@ -1,11 +1,12 @@
 #include "Lights.h"
 
-const int16_t Lights::loopDuration = 500;
-const int16_t Lights::indicatorPeriod = 800;
-const int8_t Lights::leftIndicatorPin = 12;
-const int8_t Lights::rightIndicatorPin = 13;
-const int8_t Lights::pins[] = {5, 6, 7, 8, 9, 10, 11};
-const int8_t Lights::nPins = 7;
+const int16_t Lights::loopDuration = 400; // ms
+const int16_t Lights::indicatorPeriod = 600; // ms
+
+const int8_t Lights::leftIndicatorPin = 5;
+const int8_t Lights::rightIndicatorPin = 12;
+const int8_t Lights::pins[] = {6, 7, 8, 9, 10, 11};
+const int8_t Lights::nPins = 6;
 
 Lights::Lights() {
   for (const auto &pin : pins) {
@@ -31,18 +32,23 @@ void Lights::update() {
     for (int8_t i = 0; i < nPins; i++) {
       on(pins[i]);
     }
+
     const bool obstacle = (ultra_ && ultra_->isBlockedByObstacle());
     setLightState(leftIndicatorPin, obstacle);
     setLightState(rightIndicatorPin, obstacle);
-  } else {
+  } else { // going
+    // Progress of the red loop
     const int16_t progress = ((millis() % loopDuration) / (loopDuration / nPins)) % nPins;
     bool pinOn;
     for (int8_t i = 0; i < nPins; i++) {
-      pinOn = (progress == i || ((progress + nPins / 2) % nPins) == i);
+      pinOn = (progress == i/* || ((progress + nPins / 2) % nPins) == i*/);
       setLightState(pins[i], pinOn);
     }
+
     off(leftIndicatorPin);
     off(rightIndicatorPin);
+
+    // Parking indicators
     if(motor_ && motor_->getState() == MotorState::RIGHT_OVERRIDE) {
       const bool indicatorOn = (millis() % indicatorPeriod) < indicatorPeriod / 2;
       setLightState(leftIndicatorPin, indicatorOn);
