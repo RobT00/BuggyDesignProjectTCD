@@ -7,11 +7,11 @@ void UltraSonic::ultraLoop() {
   if (currentMillis - lastPingTime >= pingInterval) {
     lastPingTime = currentMillis;
     unsigned long distance = measureDistance();
-    if (obstacle == false && distance < tresholdDistance && buggy->isGoing()) {
+    if (obstacle == false && distance < tresholdDistance && buggy->isGoing()) { // New obstacle
       buggy->stop(true);
       comms->writeXbee("OBSTACLE");
       obstacle = true;
-    } else if (obstacle == true && distance > tresholdDistance) {
+    } else if (obstacle == true && distance > tresholdDistance) { // Obstacle gone
       buggy->go(true);
       comms->writeXbee("PATHCLEAR");
       obstacle = false;

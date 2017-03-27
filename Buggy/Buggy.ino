@@ -10,14 +10,15 @@ UltraSonic *sonic;
 Lights *christmasTree;
 
 void setup() {
+  short buggyID = 1;
+
   motors = new MotorControls();
+
   christmasTree = new Lights();
   christmasTree->setMotor(motors);
 
-  short buggyID = 1;
   comm = new CommTrans(buggyID);
   comm->init();
-  buggy = new Buggy(buggyID, motors, comm);
   comm->setDefaultHandler( [] (const String & command) { comm->writeXbee("INVALID: " + command); });
   comm->addHandler("PING", [] { comm->writeXbee("PONG"); });
   comm->addHandler("PONG", [] { comm->writeXbee("PING"); });
@@ -26,6 +27,7 @@ void setup() {
   comm->addHandler("STOP", [] { buggy->stop(); });
   comm->addHandler("PARK", [] { buggy->park(); });
 
+  buggy = new Buggy(buggyID, motors, comm);
   attachInterrupt(digitalPinToInterrupt(Buggy::IR_PIN), IR_ISR, RISING);
 
   sonic = new UltraSonic(buggy, comm);
@@ -45,6 +47,7 @@ void serialEvent() {
   }
 }
 
+/** Interrupt handler has to be a non-member C function */
 void IR_ISR() {
   buggy->gantry_ISR();
 }

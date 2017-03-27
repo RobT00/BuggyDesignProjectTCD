@@ -15,11 +15,15 @@ class UltraSonic {
   const unsigned short ultraPin = 18;
   const unsigned long tresholdDistance = 16; // cm
   const unsigned long pingInterval = 400; // ms
-  const unsigned long maxPulseLength = 40000; // ms
-  unsigned long lastPingTime = 0;
+  /** Timestamp of the previous ping */
+  unsigned long lastPingTime = 0; // ms
+  /** Maximum length of a pulse sent from the sensor */
+  const unsigned long maxPulseLength = 40000; // micros
 
+  /** True if there is an obstacle in front of the buggy */
   bool obstacle = false;
 
+  /** Measure how far the obstacle is, if any */
   unsigned long measureDistance() const;
 
  public:
@@ -31,6 +35,7 @@ class UltraSonic {
     digitalWrite(powerPin, HIGH);
   }
 
+  /** Should be called in the `loop()` every time */
   void ultraLoop();
 
   bool isBlockedByObstacle() const { return obstacle; }
