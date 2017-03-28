@@ -24,22 +24,12 @@ void Buggy::stop(bool silent) {
   going = false;
 }
 
-bool Buggy::isGoing() const {
-  return going;
-}
-
 unsigned long Buggy::getTravelledTime() const {
   if (going) {
     return travelledTime + (millis() - lastGoTime);
   } else {
     return travelledTime;
   }
-}
-
-void Buggy::flashLED() const {
-  digitalWrite(13, HIGH);
-  delay(300);
-  digitalWrite(13, LOW);
 }
 
 void Buggy::gantry_ISR() {
@@ -68,14 +58,16 @@ void Buggy::detectGantry() {
 
 int Buggy::readGantry() const {
   while (digitalRead(IR_PIN) == HIGH) {}
+  // Take the average of 2 readings for greater precision
   short count = 2;
   int sum = 0;
   for (short i = 0; i < count; i++) {
     sum += pulseIn(IR_PIN, HIGH);
   }
   int pulse = sum / count;
-
   comms->writeXbee(String("IRLength: ") + pulse);
+
+  // Decide gantry ID
   if (pulse >= 500 && pulse <= 1500) {
     return 1;
   } else if (pulse >= 1500 && pulse <= 2500) {

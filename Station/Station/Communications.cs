@@ -16,10 +16,23 @@ namespace Station
         private Dictionary<Regex, Action<int, GroupCollection>> buggyhash = new Dictionary<Regex, Action<int, GroupCollection>>();
         private Action<int, string> defaultHandler = null;
 
-        // Three objects required to enable using buggy IDs as indices (1 and 2)
-        private object[] sendLocks = { new object(), new object(), new object() };
-        private object[] receiveLocks = { new object(), new object(), new object() };
+        // Three objects required in the following arrays to enable using buggy IDs as indices (1 and 2)
+
+        /// <summary>
+        /// Flags indicating wether sent message has been received by the respective buggies
+        /// </summary>
         private bool[] received = { false, false, false };
+        /// <summary>
+        /// Prevents changing the <c>received</c> flags while they are necessary for the logic
+        /// </summary>
+        private object[] receiveLocks = { new object(), new object(), new object() };
+        /// <summary>
+        /// A buggy can only send or await receipt of one message at a time
+        /// </summary>
+        private object[] sendLocks = { new object(), new object(), new object() };
+        /// <summary>
+        /// Prevent writing to the serial port from multiple threads simultaneously
+        /// </summary>
         private object portLock = new object();
 
         public Communications()
@@ -31,13 +44,20 @@ namespace Station
             port.Write("+++");
             Thread.Sleep(1100);
             port.WriteLine("ATID 3308, CH C, CN");
-            Thread.Sleep(10000);
+            Thread.Sleep(10000); // Wait for AT mode to expire
 
             port.DiscardInBuffer();
             port.DataReceived += recievedData;
 
             addCommand("ACK", (int ID) => { });
         }
+        /// <summary>
+        /// Sends command to the specified buggy
+        /// </summary>
+        /// <param name="buggy_id">Target buggy</param>
+        /// <param name="command">Command to send</param>
+        /// <param name="offlineHandler">Executed if the message is not received on the first try instead of the default user feedback</param>
+        /// <returns>True if received on first attempt, false otherwise</returns>
         public bool send(int buggy_id, string command, Action offlineHandler = null)
         {
             int reps = 0;
@@ -81,10 +101,16 @@ namespace Station
             }
             return true;
         }
+
+        /// <summary>
+        /// Handler for incoming data
+        /// </summary>
         public void recievedData(object sender, SerialDataReceivedEventArgs e)
         {
             SerialPort test = (SerialPort)sender;
             String message = test.ReadLine();
+
+            // Extract IDs and filter by them
             if (message.Length < 5)
                 return;
             int sender_id = message[0] - '0';
@@ -95,6 +121,7 @@ namespace Station
             if (sender_id != 1 && sender_id != 2)
                 return;
 
+            // Process command receipt acknowledgement
             if (command == "ACK")
             {
                 lock (receiveLocks[sender_id])
@@ -104,6 +131,7 @@ namespace Station
                 }
             }
 
+            // Run matching handlers or the default handler if there is no matching handler
             bool matched = false;
             foreach (KeyValuePair<Regex, Action<int, GroupCollection>> pair in buggyhash)
             {
