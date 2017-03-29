@@ -1,7 +1,7 @@
 #include "Lights.h"
 
-const int16_t Lights::loopDuration = 400; // ms
-const int16_t Lights::indicatorPeriod = 600; // ms
+const int16_t Lights::loopDuration = 300; // ms
+const int16_t Lights::indicatorPeriod = 400; // ms
 
 const int8_t Lights::leftIndicatorPin = 5;
 const int8_t Lights::rightIndicatorPin = 12;
