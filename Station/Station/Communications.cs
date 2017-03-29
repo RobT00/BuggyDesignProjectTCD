@@ -37,7 +37,7 @@ namespace Station
 
         public Communications()
         {
-            port.PortName = "COM13";
+            port.PortName = "COM17";
             port.BaudRate = 9600;
             port.Open();
 
@@ -95,7 +95,7 @@ namespace Station
             {
                 if (offlineHandler == null)
                 {
-                    Program.print(" Command " + command + " received after " + reps + " attempts");
+                    Program.print("Command " + command + " received after " + reps + " attempts");
                 }
                 return false;
             }

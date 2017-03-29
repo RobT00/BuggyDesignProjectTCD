@@ -8,6 +8,7 @@ namespace Station
 {
     class Program
     {
+        public static bool inputOn = false;
         /// <summary>
         /// Only one thread can print at a time
         /// This can prevent potential interleaving output from different threads and buggies
@@ -28,8 +29,9 @@ namespace Station
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Initialising...");
+            print("Initialising...", ConsoleColor.DarkYellow);
             Station station = new Station();
+            inputOn = true;
             while (true)
             {
                 string input = readInput();
@@ -38,7 +40,9 @@ namespace Station
                     Environment.Exit(0);
                 if (input == "RESET")
                 {
+                    inputOn = false;
                     station.setUp();
+                    inputOn = true;
                     continue;
                 }
 
@@ -105,6 +109,8 @@ namespace Station
         /// </summary>
         private static void printInput()
         {
+            if (!inputOn)
+                return;
             clearInput();
             lock (printLock)
             {
@@ -213,16 +219,20 @@ namespace Station
         /// Prints <c>message</c> with the specified background colour.
         /// Adds newline and redraws the input buffer
         /// </summary>
-        public static void print(string message, ConsoleColor? backgroundColor)
+        public static void print(string message,
+            ConsoleColor? backgroundColour,
+            ConsoleColor? foregroundColour = ConsoleColor.Gray)
         {
             lock (printLock)
             {
                 clearInput();
                 Console.CursorLeft = 0;
-                Console.BackgroundColor = backgroundColor ?? emptyColour;
+                Console.BackgroundColor = backgroundColour ?? emptyColour;
+                Console.ForegroundColor = foregroundColour ?? ConsoleColor.Gray;
                 Console.WriteLine(message);
                 printInput();
                 Console.BackgroundColor = emptyColour;
+                Console.ForegroundColor = ConsoleColor.Gray;
             }
         }
     }

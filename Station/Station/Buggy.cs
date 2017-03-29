@@ -204,6 +204,7 @@ namespace Station
         public void onPathClear()
         {
             buggyAction("is now able to progress in section " + getSectionName());
+            go();
         }
         public void onBuggyParked()
         {
@@ -220,6 +221,8 @@ namespace Station
                 else
                     buggyAction("parked! " + (lapsCompleted - 1) + " lap(s) completed!"); // Buggy 1 has to go an extra lap in 2-buggy mode
             }
+            if (direction == Direction.Clockwise)
+                Program.print("Challenge complete!", ConsoleColor.Yellow, ConsoleColor.Black);
         }
         public void onPingRecieved()
         {
