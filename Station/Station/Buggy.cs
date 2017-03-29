@@ -200,7 +200,6 @@ namespace Station
         public void onObstacle()
         {
             buggyAction("has detected an obstacle in section " + getSectionName());
-            motion = false;
         }
         public void onPathClear()
         {
