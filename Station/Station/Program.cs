@@ -179,7 +179,8 @@ namespace Station
                         inputBufferIndex = inputBuffer.Count - 1;
                     }
 
-                    // Separate inner if statement necessary so that 'Enter' and 'Backspace' keys are never handled by the last branch
+                    // Separate inner if statement necessary so that 'Enter' and 'Backspace' keys
+                    // are never handled by the last branch
                     if (key.Key == ConsoleKey.Enter)
                     {
                         if (inputBuffer.Last().Length != 0)
@@ -191,7 +192,8 @@ namespace Station
                     else if (key.Key == ConsoleKey.Backspace)
                     {
                         if (inputBuffer.Last().Length != 0) {
-                            inputBuffer[inputBuffer.Count - 1] = inputBuffer.Last().Substring(0, inputBuffer.Last().Length - 1);
+                            inputBuffer[inputBuffer.Count - 1] =
+                                inputBuffer.Last().Substring(0, inputBuffer.Last().Length - 1);
                         }
                     }
                     else if (key.KeyChar != '\u0000')

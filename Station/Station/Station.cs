@@ -24,7 +24,8 @@ namespace Station
             comms.addCommand("PONG", (int ID) => getBuggyForID(ID)?.onPongRecieved());
             comms.addCommand("GOING", (int ID) => getBuggyForID(ID)?.onGoing());
             comms.addCommand("STOPPED", (int ID) => getBuggyForID(ID)?.onStopped());
-            comms.addCommand(new Regex(@"^GANTRY(?<GantryID>[123])$"), (int ID, GroupCollection groups) =>
+            comms.addCommand(new Regex(@"^GANTRY(?<GantryID>[123])$"),
+                    (int ID, GroupCollection groups) =>
                     {
                         getBuggyForID(ID)?.onGantry(Int32.Parse(groups["GantryID"].Value));
                     });
@@ -32,13 +33,18 @@ namespace Station
             comms.addCommand("PARKED", (int ID) => getBuggyForID(ID)?.onBuggyParked());
             comms.addCommand("OBSTACLE", (int ID) => getBuggyForID(ID)?.onObstacle());
             comms.addCommand("PATHCLEAR", (int ID) => getBuggyForID(ID)?.onPathClear());
-            comms.addCommand(new Regex(@"^IRLength: (?<Length>\d+)$"), (int ID, GroupCollection groups) =>
+            comms.addCommand(new Regex(@"^IRLength: (?<Length>\d+)$"),
+                    (int ID, GroupCollection groups) =>
                     {
-                        Program.print("Buggy " + ID + " Pulse length: " + groups["Length"].Value, getBuggyForID(ID)?.getColour());
+                        Program.print("Buggy " + ID + " Pulse length: " + groups["Length"].Value,
+                                      getBuggyForID(ID)?.getColour());
                     });
-            comms.addCommand(new Regex(@"^INVALID: (?<Command>.*)$"), (int ID, GroupCollection groups) =>
+            comms.addCommand(new Regex(@"^INVALID: (?<Command>.*)$"),
+                    (int ID, GroupCollection groups) =>
                     {
-                        Program.print("Buggy " + ID + " received invalid command: " + groups["Command"].Value, getBuggyForID(ID)?.getColour());
+                        Program.print("Buggy " + ID + " received invalid command: "
+                                      + groups["Command"].Value,
+                                      getBuggyForID(ID)?.getColour());
                     });
 
             setUp();
@@ -95,7 +101,8 @@ namespace Station
 
         /// <summary>
         /// Sets up the environment for a fresh run
-        /// Clears for any previously existing buggies, inputs number of buggies and laps, initialises new buggies and ensures they are online
+        /// Clears for any previously existing buggies, inputs number of buggies and laps,
+        /// initialises new buggies and ensures they are online
         /// </summary>
         public void setUp()
         {
@@ -118,7 +125,7 @@ namespace Station
                 Console.WriteLine("How many laps would you like to do? ");
                 Int32.TryParse(Console.ReadLine(), out laps);
             }
-            
+
             // Initialise new buggies
             buggy1 = new Buggy(1, Direction.Clockwise, this, comms);
             buggy1.syn(silent: true);

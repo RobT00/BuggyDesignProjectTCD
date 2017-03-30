@@ -1,6 +1,6 @@
 #include "Lights.h"
 
-const int16_t Lights::loopDuration = 300; // ms
+const int16_t Lights::loopDuration = 600; // ms
 const int16_t Lights::indicatorPeriod = 400; // ms
 
 const int8_t Lights::leftIndicatorPin = 5;
@@ -38,11 +38,10 @@ void Lights::update() {
     setLightState(rightIndicatorPin, obstacle);
   } else { // going
     // Progress of the red loop
-    const int16_t progress = ((millis() % loopDuration) / (loopDuration / nPins)) % nPins;
-    bool pinOn;
+    int16_t progress = (millis() % loopDuration) / (loopDuration / (2 * nPins));
+    progress = (progress / nPins) ? (2 * nPins - 1 - progress) : progress;
     for (int8_t i = 0; i < nPins; i++) {
-      pinOn = (progress == i/* || ((progress + nPins / 2) % nPins) == i*/);
-      setLightState(pins[i], pinOn);
+      setLightState(pins[i], i == progress);
     }
 
     off(leftIndicatorPin);
