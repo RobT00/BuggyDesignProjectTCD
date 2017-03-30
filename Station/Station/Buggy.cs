@@ -11,7 +11,7 @@ namespace Station
     {
         private int ID;
         private Direction direction;
-        private int lastGantry = 0;
+        private int lastGantry;
         private int lapsCompleted = 0;
         private int requiredLaps = 0;
 
@@ -31,6 +31,11 @@ namespace Station
             this.direction = direction;
             this.comms = comms;
             this.station = station;
+
+            if (direction == Direction.Clockwise)
+                this.lastGantry = 2;
+            else
+                this.lastGantry = 1;
         }
         public void startOnlineCheck()
         {
@@ -96,7 +101,8 @@ namespace Station
                     section = lastGantry - 1;
             }
 
-            if ((direction == Direction.Clockwise && lastGantry == 2 && lapsCompleted >= requiredLaps)
+            if ((direction == Direction.Clockwise && lastGantry == 2 &&
+                        (lapsCompleted == 0 || lapsCompleted >= requiredLaps))
                 || (direction == Direction.AntiClockwise && lastGantry == 1))
                 return "Park Lane";
             else
