@@ -11,7 +11,7 @@ namespace Station
     {
         private int ID;
         private Direction direction;
-        private int lastGantry = 0;
+        private int lastGantry;
         private int lapsCompleted = 0;
         private int requiredLaps = 0;
 
@@ -31,6 +31,11 @@ namespace Station
             this.direction = direction;
             this.comms = comms;
             this.station = station;
+
+            if (direction == Direction.Clockwise)
+                this.lastGantry = 2;
+            else
+                this.lastGantry = 1;
         }
         public void startOnlineCheck()
         {
@@ -96,7 +101,8 @@ namespace Station
                     section = lastGantry - 1;
             }
 
-            if ((direction == Direction.Clockwise && lastGantry == 2 && lapsCompleted >= requiredLaps)
+            if ((direction == Direction.Clockwise && lastGantry == 2 &&
+                        (lapsCompleted == 0 || lapsCompleted >= requiredLaps))
                 || (direction == Direction.AntiClockwise && lastGantry == 1))
                 return "Park Lane";
             else
@@ -143,13 +149,16 @@ namespace Station
                 lapsCompleted++;
             }
             // Missed the gantry that terminates the buggy's lap, updating late
-            else if ((direction == Direction.Clockwise && (lastGantry == 1 && currentGantry != 2) || (lastGantry == 3 && currentGantry == 3))
-                || (direction == Direction.AntiClockwise && lastGantry == 2 && currentGantry == 2))
+            else if ((direction == Direction.Clockwise &&
+                        (lastGantry == 1 && currentGantry != 2) ||
+                        (lastGantry == 3 && currentGantry == 3))
+                || (direction == Direction.AntiClockwise &&
+                    lastGantry == 2 && currentGantry == 2))
             {
                 lapsCompleted++;
             }
-
-            lastGantry = currentGantry; // Lap detection needs the previous gantry ID, place this afterwards
+            // Lap detection needs the previous gantry ID, place this afterwards
+            lastGantry = currentGantry;
 
             buggyAction("stopping at gantry " + currentGantry);
             buggyAction("entering track section: " + getSectionName());
@@ -218,8 +227,8 @@ namespace Station
             {
                 if (station.getNumberOfBuggies() == 1)
                     buggyAction("parked! " + (lapsCompleted) + " lap(s) completed!");
-                else
-                    buggyAction("parked! " + (lapsCompleted - 1) + " lap(s) completed!"); // Buggy 1 has to go an extra lap in 2-buggy mode
+                else // Buggy 1 has to go an extra lap in 2-buggy mode
+                    buggyAction("parked! " + (lapsCompleted - 1) + " lap(s) completed!");
             }
             if (direction == Direction.Clockwise)
                 Program.print("Challenge complete!", ConsoleColor.Yellow, ConsoleColor.Black);

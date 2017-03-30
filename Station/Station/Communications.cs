@@ -13,10 +13,12 @@ namespace Station
     {
         private SerialPort port = new SerialPort();
 
-        private Dictionary<Regex, Action<int, GroupCollection>> buggyhash = new Dictionary<Regex, Action<int, GroupCollection>>();
+        private Dictionary<Regex, Action<int, GroupCollection>> buggyhash =
+            new Dictionary<Regex, Action<int, GroupCollection>>();
         private Action<int, string> defaultHandler = null;
 
-        // Three objects required in the following arrays to enable using buggy IDs as indices (1 and 2)
+        // Three objects required in the following arrays to enable using buggy IDs
+        // as indices (1 and 2)
 
         /// <summary>
         /// Flags indicating wether sent message has been received by the respective buggies
@@ -56,7 +58,8 @@ namespace Station
         /// </summary>
         /// <param name="buggy_id">Target buggy</param>
         /// <param name="command">Command to send</param>
-        /// <param name="offlineHandler">Executed if the message is not received on the first try instead of the default user feedback</param>
+        /// <param name="offlineHandler">Executed if the message is not received
+        /// on the first try instead of the default user feedback</param>
         /// <returns>True if received on first attempt, false otherwise</returns>
         public bool send(int buggy_id, string command, Action offlineHandler = null)
         {
@@ -79,7 +82,8 @@ namespace Station
                             }
                             else
                             {
-                                Program.print("Command " + command + " not being recieved by buggy " + buggy_id);
+                                Program.print("Command " + command + " not being recieved by buggy "
+                                              + buggy_id);
                                 Program.print("Will keep sending command");
                             }
                         }
