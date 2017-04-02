@@ -74,5 +74,15 @@ BY WHO: Rob, Aron
 FUNCTIONALITY ADDED: Optional LED lights
 BY WHO: Aron
 FUNCTIONALITY ADDED: Station uses regular expressions to interpret commands
+BY WHO: Aron
 
 FUNCTIONALITY FIXED: Improved detection of buggy going offline. Using `Task`s to handle commands in a separate thread pool
+BY WHO: Rob, Aron
+
+
+#WEEK 11
+
+FUNCTIONALITY FIXED: Code clarity and commenting
+BY WHO: Aron
+FUNCTIONALITY FIXED: Pins and timings
+BY WHO: Aron
