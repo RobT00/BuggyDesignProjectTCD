@@ -20,7 +20,7 @@ class Buggy {
   };
   ParkingState parkingState = NOT_PARKING;
   const unsigned int parking_overrideOffAt = 3000; // ms
-  const unsigned int parking_stopAt = 7000; // ms
+  const unsigned int parking_stopAt = 6500; // ms
 
   const CommTrans *comms;
   MotorControls *motor;
