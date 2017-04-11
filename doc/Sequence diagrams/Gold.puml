@@ -4,15 +4,9 @@ title Gold challenge sequence diagram
 participant "Buggy 1" as b1 #f44
 participant Station as s #44f
 participant "Buggy 2" as b2 #4f4
-note over s #fff: Ask user the challenge level to present\n\
-    If gold, ask user for number of loops to go [➔n]\n\
-    If silver, 1➔n\n\
-    For bronze, see bronze sequence diagram
+note over s #fff: Ask user the number of buggies used\n\
+and the number of laps to go [➔n]
 note over b1, b2 #fff: Buggies in parking lot, stopped
-group Initialise
-    s->b1: CLOCK
-    s->b2: ACLOCK
-end
 loop n times
     group Buggy 1 lap
         s->b1: GO
