@@ -39,7 +39,7 @@ namespace Station
 
         public Communications()
         {
-            port.PortName = "COM17";
+            port.PortName = "COM5";
             port.BaudRate = 9600;
             port.Open();
 

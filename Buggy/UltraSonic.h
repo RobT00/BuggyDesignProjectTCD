@@ -13,7 +13,8 @@ class UltraSonic {
   const unsigned short groundPin = 16;
   const unsigned short powerPin = 17;
   const unsigned short ultraPin = 18;
-  const unsigned long tresholdDistance = 15; // cm
+  const unsigned long tresholdDistance = 14; // cm 
+  //used 14 for buggy1 and 13 for buggy2
   const unsigned long pingInterval = 400; // ms
   /** Timestamp of the previous ping */
   unsigned long lastPingTime = 0; // ms
