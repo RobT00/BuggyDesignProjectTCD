@@ -7,6 +7,8 @@ group Obstacle encountered
     b->s: OBSTACLE
     ...
     b->s: PATHCLEAR
+    b<-s: GO
+    b->s: GOING
 end
 ...
 @enduml

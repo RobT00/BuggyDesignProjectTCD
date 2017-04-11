@@ -4,7 +4,7 @@ void Buggy::go(bool silent) {
   if (going) {
     return;
   }
-  motor.go();
+  motor->go();
   lastGoTime = millis();
   if (!silent) {
     comms->writeXbee("GOING");
@@ -16,16 +16,12 @@ void Buggy::stop(bool silent) {
   if (!going) {
     return;
   }
-  motor.stop();
+  motor->stop();
   travelledTime += millis() - lastGoTime;
   if (!silent) {
     comms->writeXbee("STOPPED");
   }
   going = false;
-}
-
-bool Buggy::isGoing() const {
-  return going;
 }
 
 unsigned long Buggy::getTravelledTime() const {
@@ -34,12 +30,6 @@ unsigned long Buggy::getTravelledTime() const {
   } else {
     return travelledTime;
   }
-}
-
-void Buggy::flashLED() const {
-  digitalWrite(13, HIGH);
-  delay(300);
-  digitalWrite(13, LOW);
 }
 
 void Buggy::gantry_ISR() {
@@ -68,14 +58,16 @@ void Buggy::detectGantry() {
 
 int Buggy::readGantry() const {
   while (digitalRead(IR_PIN) == HIGH) {}
+  // Take the average of 2 readings for greater precision
   short count = 2;
   int sum = 0;
   for (short i = 0; i < count; i++) {
     sum += pulseIn(IR_PIN, HIGH);
   }
   int pulse = sum / count;
-
   comms->writeXbee(String("IRLength: ") + pulse);
+
+  // Decide gantry ID
   if (pulse >= 500 && pulse <= 1500) {
     return 1;
   } else if (pulse >= 1500 && pulse <= 2500) {
@@ -102,16 +94,16 @@ void Buggy::updateParking() {
   }
 
   if (parkingState == BEFORE_INTERSECTION) {
-    if (travelDirection == CLOCKWISE && motor.getState() != LEFT_OVERRIDE) {
-      motor.leftOverride();
-    } else if (travelDirection == ANTI_CLOCKWISE && motor.getState() != RIGHT_OVERRIDE) {
-      motor.rightOverride();
+    if (travelDirection == CLOCKWISE && motor->getState() != LEFT_OVERRIDE) {
+      motor->leftOverride();
+    } else if (travelDirection == ANTI_CLOCKWISE && motor->getState() != RIGHT_OVERRIDE) {
+      motor->rightOverride();
     }
   }
 
   unsigned long sinceGantry = timeTravelledSinceGantry();
   if (parkingState == BEFORE_INTERSECTION && sinceGantry > parking_overrideOffAt) {
-    motor.go();
+    motor->go();
     parkingState = AFTER_INTERSECTION;
   } else if (parkingState == AFTER_INTERSECTION && sinceGantry > parking_stopAt) {
     stop(true);

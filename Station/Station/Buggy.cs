@@ -11,11 +11,19 @@ namespace Station
     {
         private int ID;
         private Direction direction;
-        private Communications comms;
-        private int last_gantry = 0;
-        private int laps = 0;
-        private Station station;
+        private int lastGantry;
+        private int lapsCompleted = 0;
         private int requiredLaps = 0;
+
+        private Communications comms;
+        private Station station;
+
+        /// <summary>
+        /// Whether or not the buggy should be moving
+        /// </summary>
+        private volatile bool motion = false;
+        private Thread onlineThread = null;
+        private volatile bool onlineThreadShouldRun = false;
 
         public Buggy(int ID, Direction direction, Station station, Communications comms)
         {
@@ -24,18 +32,91 @@ namespace Station
             this.comms = comms;
             this.station = station;
 
-            sendDirection();
+            if (direction == Direction.Clockwise)
+                this.lastGantry = 2;
+            else
+                this.lastGantry = 1;
+        }
+        public void startOnlineCheck()
+        {
+            if (onlineThread != null)
+                return;
+            onlineThread = new Thread(new ThreadStart(() =>
+            {
+                while (onlineThreadShouldRun)
+                {
+                    try
+                    {
+                        Thread.Sleep(1000);
+                        bool firstTry = syn();
+                        if (!firstTry)
+                        {
+                            buggyAction("is back online!");
+                            if (motion)
+                            {
+                                go();
+                            }
+                        }
+                    } catch (ThreadInterruptedException) {}
+                }
+            }));
+            onlineThreadShouldRun = true;
+            onlineThread.Start();
+        }
+        public void stopOnlineCheck()
+        {
+            if (onlineThread == null)
+                return;
+            onlineThreadShouldRun = false;
+            onlineThread.Interrupt();
+            onlineThread.Join();
         }
         public void setRequiredLaps(int laps)
         {
             requiredLaps = laps;
         }
+        public ConsoleColor getColour()
+        {
+            switch (ID)
+            {
+                case 1:
+                    return ConsoleColor.DarkBlue;
+                case 2:
+                    return ConsoleColor.DarkRed;
+                default:
+                    return ConsoleColor.Magenta;
+            }
+        }
+
+        private string getSectionName()
+        {
+            int section;
+            if (direction == Direction.Clockwise)
+                section = lastGantry;
+            else
+            {
+                if (lastGantry == 1)
+                    section = 3;
+                else
+                    section = lastGantry - 1;
+            }
+
+            if ((direction == Direction.Clockwise && lastGantry == 2 &&
+                        (lapsCompleted == 0 || lapsCompleted >= requiredLaps))
+                || (direction == Direction.AntiClockwise && lastGantry == 1))
+                return "Park Lane";
+            else
+                return section.ToString();
+        }
+
         public void go()
         {
+            motion = true;
             comms.send(ID, "GO");
         }
         public void stop()
         {
+            motion = false;
             comms.send(ID, "STOP");
         }
         public void sendPing()
@@ -46,141 +127,137 @@ namespace Station
         {
             comms.send(ID, "PONG");
         }
-        public void onGantry(int gantry_num)
+        public bool syn(bool silent = false)
         {
+            return comms.send(ID, "SYN", () =>
+                    {
+                        if (!silent)
+                            buggyAction("is Offline! Will keep pinging");
+                    });
+        }
+        public void goPark()
+        {
+            comms.send(ID, "PARK");
+        }
+
+        public void onGantry(int currentGantry)
+        {
+            // At gantry that terminates the buggy's lap
+            if ((direction == Direction.Clockwise && currentGantry == 2)
+                || (direction == Direction.AntiClockwise && currentGantry == 1))
+            {
+                lapsCompleted++;
+            }
+            // Missed the gantry that terminates the buggy's lap, updating late
+            else if ((direction == Direction.Clockwise &&
+                        (lastGantry == 1 && currentGantry != 2) ||
+                        (lastGantry == 3 && currentGantry == 3))
+                || (direction == Direction.AntiClockwise &&
+                    lastGantry == 2 && currentGantry == 2))
+            {
+                lapsCompleted++;
+            }
+            // Lap detection needs the previous gantry ID, place this afterwards
+            lastGantry = currentGantry;
+
+            buggyAction("stopping at gantry " + currentGantry);
+            buggyAction("entering track section: " + getSectionName());
+            buggyAction("is now on lap " + (lapsCompleted + 1));
+
             stop();
             Thread.Sleep(1000);
 
-            if (((direction == Direction.Clockwise) && (gantry_num == 2)) || ((direction == Direction.AntiClockwise) && (gantry_num == 1)))
-                laps++;
-            else if (((direction == Direction.Clockwise) && (last_gantry == 1) && (gantry_num != 2)) 
-                || ((direction == Direction.AntiClockwise) && (last_gantry == 2) && (gantry_num != 1))) {
-                laps++;
-            }
-            go();
-            last_gantry = gantry_num;
-            trackState("Gantry", gantry_num);
+            bool shouldGo = true;
+            bool shouldPark = false;
             if (station.getNumberOfBuggies() < 2)
             {
-                if (laps >= requiredLaps && gantry_num == 2)
-                    goPark();
+                if (lapsCompleted >= requiredLaps && currentGantry == 2)
+                    shouldPark = true;
             }
             else
             {
                 if (direction == Direction.Clockwise)
                 {
-                    if (laps >= requiredLaps && gantry_num == 2) //Based on our system, clockwise will be counted as doing one extra lap
-                        goPark();
-                    else if (last_gantry == 3)
+                    if (lapsCompleted >= requiredLaps && currentGantry == 2)
+                        shouldPark = true;
+                    else if (lastGantry == 3)
                     {
-                        stop();
+                        shouldGo = false;
                         station.buggySwitch(ID);
                     }
                 }
                 else if (direction == Direction.AntiClockwise)
                 {
-                    if (gantry_num == 1)
+                    if (currentGantry == 1)
                     {
-                        goPark();
+                        shouldPark = true;
                     }
                 }
             }
+            if (shouldGo)
+                go();
+            if (shouldPark)
+                goPark();
         }
-        public void goPark()
+        public void onInvalidGantry()
         {
-            comms.send(ID, "PARK");    
+            buggyAction("interpreted gantry as invalid");
+            stop();
+            Thread.Sleep(1000);
+            go();
         }
-        public void buggyParked()
+        public void onObstacle()
         {
+            buggyAction("has detected an obstacle in section " + getSectionName());
+        }
+        public void onPathClear()
+        {
+            buggyAction("is now able to progress in section " + getSectionName());
+            go();
+        }
+        public void onBuggyParked()
+        {
+            motion = false;
             if (direction == Direction.AntiClockwise)
             {
                 station.buggySwitch(ID);
-                Program.print("Buggy " + ID + " is in the park lane");
+                buggyAction("is in the park lane");
             }
             else
             {
                 if (station.getNumberOfBuggies() == 1)
-                    Program.print("Buggy " + ID + " parked! " + (laps) + " lap(s) completed!");
-                else
-                    Program.print("Buggy " + ID + " parked! " + (laps - 1) + " lap(s) completed!");
+                    buggyAction("parked! " + (lapsCompleted) + " lap(s) completed!");
+                else // Buggy 1 has to go an extra lap in 2-buggy mode
+                    buggyAction("parked! " + (lapsCompleted - 1) + " lap(s) completed!");
             }
+            if (direction == Direction.Clockwise)
+                Program.print("Challenge complete!", ConsoleColor.Yellow, ConsoleColor.Black);
         }
-        private void sendDirection()
+        public void onPingRecieved()
         {
-            if (direction == Direction.AntiClockwise)
-            {
-                comms.send(ID, "ACLOCK");
-            }
-            else
-            {
-                comms.send(ID, "CLOCK");
-            }
+            buggyAction("PING recieved");
+        }
+        public void onPongRecieved()
+        {
+            buggyAction("PONG recieved");
+        }
+        public void onGoing()
+        {
+            buggyAction("going");
+            // buggyAction("is on the move in section " + getSectionName());
+        }
+        public void onStopped()
+        {
+            buggyAction("stopped");
+            // buggyAction("has stopped in section " + getSectionName());
         }
 
-        public void pingRecieved()
+        /// <summary>
+        /// Prints the ID of the buggy and the given message
+        /// </summary>
+        private void buggyAction(String command = "")
         {
-            Program.print("PING recieved");
-        }
-        public void pongRecieved()
-        {
-            Program.print("PONG recieved");
-        }
-        public void going()
-        {
-
-        }
-        public void stopped()
-        {
-
-        }
-        private void buggyAction()
-        {
-            Console.Write("> Buggy " + ID + ": ");
-        }
-        private void trackState(string call, int num)
-        {
-            buggyAction();
-            if (direction == Direction.AntiClockwise)
-            {
-                if (num == 1)
-                    num = num + 2;
-                else
-                    num--;
-            }
-            if (call == "Gantry") {
-                onLap();
-                Console.Write((" stopped at gantry " + last_gantry + " Entering track section: "));
-                if ((laps >= requiredLaps && last_gantry == 2) 
-                    || (direction == Direction.AntiClockwise && last_gantry == 1)) {
-                    Console.WriteLine(("Park Lane"));
-                    return;
-                }
-                Console.WriteLine((num.ToString())); 
-            }
-            else if (call == "Stop")
-            {
-                Console.WriteLine((" has stopped in section " + num));
-            }
-            else if (call == "Go")
-            {
-                Console.WriteLine((" is on the move in section " + num));
-            }
-         }
-        private void onLap()
-        {
-            buggyAction();
-            Console.WriteLine("is on lap " + laps);
-        }
-        private int earlyAction()
-        {
-            int a;
-            {
-                if (direction == Direction.AntiClockwise)
-                    a = 2;
-                else
-                    a = 3;
-            }
-            return a;
+            Program.print("Buggy " + ID + " " + command, getColour());
         }
     }
 }

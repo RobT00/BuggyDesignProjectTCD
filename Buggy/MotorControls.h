@@ -9,18 +9,18 @@ enum MotorState {
 
 class MotorControls {
  private:
-    static const short bcc_pin = 3;
+  static const short bcc_pin = 3;
 
-    MotorState state = STOPPED;
+  MotorState state = STOPPED;
 
-    void write(short duration) const;
+  void write(short duration) const;
 
  public:
-    MotorControls();
-    void leftOverride();
-    void rightOverride();
-    void go();
-    void stop();
-    void fullPower();
-    MotorState getState() const;
+  MotorControls();
+  void leftOverride();
+  void rightOverride();
+  void go();
+  void stop();
+  void fullPower();
+  MotorState getState() const;
 };
